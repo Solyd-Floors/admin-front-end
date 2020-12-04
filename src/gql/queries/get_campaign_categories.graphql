@@ -1,0 +1,11 @@
+
+query GET_USERS { 
+   getCampaignCategories @rest(type: "GET_CAMPAIGN_CATEGORIES_REQUEST", path: "/campaign_categories") { 
+        data @type(name: "CampaignCategories") {
+            campaign_categories @type(name: "CampaignCategory") {
+                id
+                name
+            }
+        }
+   } 
+}

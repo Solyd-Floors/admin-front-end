@@ -1,0 +1,11 @@
+
+query GET_BRANDS { 
+   getBrands @rest(type: "GET_BRANDS_REQUEST", path: "/brands") { 
+        data @type(name: "Brands") {
+            brands @type(name: "Brand") {
+                id
+                name
+            }
+        }
+   } 
+}

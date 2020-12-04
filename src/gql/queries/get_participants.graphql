@@ -1,0 +1,20 @@
+
+query GET_PARTICIPANTS { 
+   getParticipants @rest(type: "GET_PARTICIPANTS_REQUEST", path: "/participants") { 
+        data @type(name: "Participants") {
+            participants @type(name: "Participant") {
+                id
+                User @type(name: "User") {
+                    id
+                    full_name
+                }
+                Event @type(name: "Event") {
+                    id
+                    name
+                }
+                event_name
+                user_full_name
+            }
+        }
+   } 
+}

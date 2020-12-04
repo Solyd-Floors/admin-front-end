@@ -1,0 +1,11 @@
+
+query GET_FLOOR_TYPES { 
+   getFloorTypes @rest(type: "GET_FLOOR_TYPES_REQUEST", path: "/floor_types") { 
+        data @type(name: "FloorTypes") {
+            floor_types @type(name: "FloorType") {
+                id
+                name
+            }
+        }
+   } 
+}

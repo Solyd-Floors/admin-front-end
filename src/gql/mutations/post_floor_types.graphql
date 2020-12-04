@@ -1,0 +1,22 @@
+
+mutation POST_FLOOR_TYPES(
+    $name: String,
+) {
+    postFloorTypes(
+        input: {
+            name: $name
+        }
+    ) @rest(
+        method: "POST",
+        path: "/floor_types",
+        type: "PostFloorTypesRequest"
+    ) {
+        data @type(name: "PostFloorTypesData") {
+            token
+            floor_types @type(name: "FloorType") {
+                id
+                name
+            }
+        }
+    }
+}

@@ -1,0 +1,33 @@
+
+mutation POST_AUTH(
+    $email: String!,
+    $password: String!
+) {
+    postAuth(
+        input: {
+            email: $email, 
+            password: $password
+        }
+    ) @rest(
+        method: "POST",
+        path: "/auth",
+        type: "AuthPayload"
+    ) {
+        data @type(name: "AuthPayloadData") {
+            token
+            user @type(name: "User") {
+                id
+                first_name
+                last_name
+                email
+                birthday
+                gender
+                contract_id
+                points
+                isPremium
+                isAdmin
+                isAdvertiser
+            }
+        }
+    }
+}

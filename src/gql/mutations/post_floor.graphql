@@ -1,0 +1,36 @@
+
+mutation POST_FLOOR(
+    $name: String,
+) {
+    postFloorTypes(
+        input: {
+            name: $name
+            thumbnail_url: $thumbnail_url
+            price: $price
+            quantity: $quantity
+            FloorCategoryId: $FloorCategoryId
+            FloorTypeId: $FloorTypeId
+            BrandId: $BrandId
+            UserId: $UserId
+        }
+    ) @rest(
+        method: "POST",
+        path: "/floor",
+        type: "PostFloorRequest"
+    ) {
+        data @type(name: "PostFloorData") {
+            token
+            floor @type(name: "Floor") {
+                id
+                name
+                thumbnail_url
+                price
+                quantity
+                FloorCategoryId
+                FloorTypeId
+                BrandId
+                UserId
+            }
+        }
+    }
+}

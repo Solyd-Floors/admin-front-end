@@ -1,0 +1,13 @@
+
+query GET_POINTS_CHANGELOGS { 
+   getPointsChangelogs @rest(type: "GET_POINTS_CHANGELOGS", path: "/points/changelogs") { 
+        data @type(name: "Events") {
+            points_changelogs @type(name: "PointChangelog") {
+                id
+                UserId
+                message
+                points
+            }
+        }
+   } 
+}

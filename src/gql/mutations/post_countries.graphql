@@ -1,0 +1,22 @@
+
+mutation POST_COUNTRIES(
+    $name: String,
+) {
+    postCountries(
+        input: {
+            name: $name
+        }
+    ) @rest(
+        method: "POST",
+        path: "/countries",
+        type: "PostCountriesRequest"
+    ) {
+        data @type(name: "PostCountriesData") {
+            token
+            countries @type(name: "Country") {
+                id
+                name
+            }
+        }
+    }
+}

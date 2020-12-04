@@ -1,0 +1,45 @@
+
+mutation POST_EVENT(
+    $id: String!,
+    $thumbnail_url: String!,
+    $name: String!,
+    $description: String!,
+    $datetime: String!,
+    $link: String!,
+    $number: String!,
+    $email: String!
+) {
+    postEvent(
+        input: {
+            id: $id
+            thumbnail_url: $thumbnail_url
+            name: $name
+            description: $description
+            datetime: $datetime
+            link: $link
+            number: $number
+            email: $email
+        }
+    ) @rest(
+        method: "POST",
+        path: "/events",
+        type: "PostEventRequest"
+    ) {
+        data @type(name: "PostEventData") {
+            token
+            event @type(name: "Event") {
+                id
+                thumbnail_url
+                name
+                description
+                datetime
+                link
+                number
+                email
+                limit_participants
+                seats_string_representation
+                has_seat_available
+            }
+        }
+    }
+}

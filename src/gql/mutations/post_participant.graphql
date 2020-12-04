@@ -1,0 +1,25 @@
+
+mutation POST_PARTICIPANT(
+    $UserId: Number,
+    $EventId: Number,
+) {
+    postUser(
+        input: {
+            UserId: $UserId
+            EventId: $EventId
+        }
+    ) @rest(
+        method: "POST",
+        path: "/participants",
+        type: "PostParticipantRequest"
+    ) {
+        data @type(name: "PostParticipantData") {
+            token
+            participants @type(name: "Participant") {
+                id
+                UserId
+                EventId
+            }
+        }
+    }
+}

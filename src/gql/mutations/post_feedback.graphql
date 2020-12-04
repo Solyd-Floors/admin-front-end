@@ -1,0 +1,32 @@
+
+mutation POST_FEEDBACK(
+    $name: String,
+    $benefit: String,
+    $description: String,
+    $type: String,
+) {
+    postFeedback(
+        input: {
+            name: $name
+            benefit: $benefit
+            description: $description
+            type: $type
+        }
+    ) @rest(
+        method: "POST",
+        path: "/feedback",
+        type: "PostFeedbackRequest"
+    ) {
+        data @type(name: "PostFeedbackData") {
+            token
+            feedback @type(name: "Feedback") {
+                id
+                name
+                benefit
+                description
+                type
+                UserId
+            }
+        }
+    }
+}

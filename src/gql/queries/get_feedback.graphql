@@ -1,0 +1,15 @@
+
+query GET_FEEDBACK { 
+   getFeedback @rest(type: "GET_FEEDBACK__REQUEST", path: "/feedback") { 
+        data @type(name: "Feedbacks") {
+            feedback @type(name: "Feedback") {
+                id
+                type
+                name
+                benefit
+                description
+                UserId
+            }
+        }
+   } 
+}

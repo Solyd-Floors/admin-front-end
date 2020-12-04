@@ -1,0 +1,22 @@
+
+mutation POST_USER(
+    $name: String!,
+) {
+    postUser(
+        input: {
+            name: $name
+        }
+    ) @rest(
+        method: "POST",
+        path: "/campaign_categories",
+        type: "PostCampaignCategoryRequest"
+    ) {
+        data @type(name: "PostCampaignCategoryData") {
+            token
+            campaign_category @type(name: "CampaignCategory") {
+                id
+                name
+            }
+        }
+    }
+}

@@ -1,0 +1,14 @@
+
+query GET_USERS { 
+   getUsers @rest(type: "GET_USERS_REQUEST", path: "/users") { 
+        data @type(name: "Users") {
+            users @type(name: "User") {
+                id
+                full_name
+                email
+                Installer
+                isAdmin
+            }
+        }
+   } 
+}

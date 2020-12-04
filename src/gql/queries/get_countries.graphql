@@ -1,0 +1,11 @@
+
+query GET_COUNTRIES { 
+   getCountries @rest(type: "GET_COUNTRIES_REQUEST", path: "/countries") { 
+        data @type(name: "Countries") {
+            countries @type(name: "Country") {
+                id
+                name
+            }
+        }
+   } 
+}
