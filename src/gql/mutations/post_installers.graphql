@@ -1,0 +1,42 @@
+
+mutation POST_INSTALLER(
+    $name: String,
+    $age: Integer
+    $CountryId: Integer
+    $UserId: Integer
+    $job_status: String
+    $hourly_rate: Integer
+    $status: String
+    $profile_picture: String
+) {
+    postInstallers(
+        input: {
+            name: $name
+            age: $age
+            CountryId: $CountryId
+            UserId: $UserId
+            job_status: $job_status
+            hourly_rate: $hourly_rate
+            status: $status
+            profile_picture: $profile_picture
+        }
+    ) @rest(
+        method: "POST",
+        path: "/installers",
+        type: "PostInstallerRequest"
+    ) {
+        data @type(name: "PostInstallerData") {
+            token
+            installer @type(name: "Installer") {
+                id
+                age
+                job_status
+                hourly_rate
+                status
+                profile_picture_url
+                CountryId
+                UserId
+            }
+        }
+    }
+}

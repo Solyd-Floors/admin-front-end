@@ -24,18 +24,16 @@ import Alert from '@material-ui/lab/Alert';
 import { withApollo, Query } from "react-apollo";
 
 import { loader } from 'graphql.macro';
-import getDeleteCountryGQL from "../../gql/mutations/delete_country.graphql";
-import getUpdateCampaignCategoryGQL from "../../gql/mutations/update_country.graphql";
+import getDeleteCountryGQL from "../../gql/mutations/delete_installers.graphql";
+import getUpdateCampaignCategoryGQL from "../../gql/mutations/update_installer.graphql";
 
 import campaignCategorySchema from "./validations";
 import removeNullProperties from "../../helpers/removeNullProperties";
 import { Route, Link } from 'react-router-dom';
 import { Button } from '@material-ui/core';
 
-const GET_COUNTRIES = loader("../../gql/queries/get_countries.graphql")
-const POST_COUNTRIES = loader("../../gql/mutations/post_countries.graphql")
-const GET_CAMPAIGNS = loader("../../gql/queries/get_campaigns.graphql")
-const GET_USERS = loader("../../gql/queries/get_users.graphql") 
+const GET_BRANDS = loader("../../gql/queries/get_installers.graphql")
+const POST_BRANDS = loader("../../gql/mutations/post_installers.graphql")
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <Button style={{ backgroundColor: "#3f51b5", width: "100px" }} size="large" color="primary" {...props} ref={ref}><div style={{ color: "white" }}>New</div></Button>),
@@ -67,7 +65,23 @@ class App extends React.Component {
         }
         this.columns = [
             { title: "ID", field: "id", hidden: false, editable: false },
-            { title: "name", field: "name", hidden: false },
+            { title: "User ID", field: "UserId", type: "numeric", hidden: false },
+            { 
+                title: "Profile Pic Url", field: "profile_picture", hidden: false,
+                render: p => <p>{p.profile_picture_url}</p>
+            },
+            { title: "age", field: "age", type: "numeric", hidden: false },
+            { title: "Hourly Rate", field: "hourly_rate", type: "numeric", hidden: false },
+            { title: "Country ID", field: "CountryId", type: "numeric", hidden: false },
+            { 
+                title: "Job Status", field: "job_status", 
+                lookup: { "EMPLOYED": "Employed", "UNEMPLOYED": "Unemployed" }, 
+                hidden: false 
+            },
+            { 
+                title: "status", field: "status", hidden: false,
+                lookup: { "PENDING": "Pending", "APPROVED": "Approved", "DENIED": "Denied" } 
+            },
         ]
 
     }
@@ -77,18 +91,18 @@ class App extends React.Component {
     updateData = async () => {
         try {
             let cache = await this.props.client.readQuery({
-                query: GET_COUNTRIES
+                query: GET_BRANDS
             })
-            this.setData(cache.getCountries.data.countries)
+            this.setData(cache.getInstallers.data.installers)
         } catch (err) { }
     }
     handleMutate = async mutate_function => {
         let res;
         try {
             res = await mutate_function();
-            console.log(res)
+            console.log(res,82828)
         } catch (err) { 
-            console.log(err.message,err,JSON.stringify(err))
+            console.log(JSON.stringify(err),"SADDDSAADS")
             if (
                 err.networkError &&
                 err.networkError.result
@@ -115,11 +129,12 @@ class App extends React.Component {
             this.setErrorMessages(err.errors)
             return reject()
         }
+        console.log({newData,args})
         let success = await this.handleMutate(() => {
             return this.props.client.mutate({
-                mutation: POST_COUNTRIES,
+                mutation: POST_BRANDS,
                 variables: args,
-                refetchQueries: [{ query: GET_COUNTRIES }]
+                refetchQueries: [{ query: GET_BRANDS }]
             })
         })
         return success ? resolve() : reject();
@@ -134,11 +149,11 @@ class App extends React.Component {
         if (!success) return reject();
 
         let cache = await this.props.client.readQuery({
-            query: GET_COUNTRIES
+            query: GET_BRANDS
         })
-        cache.getCountries.data.countries = cache.getCountries.data.countries.filter(x => x.id != oldData.id)
+        cache.getInstallers.data.installers = cache.getInstallers.data.installers.filter(x => x.id != oldData.id)
         await this.props.client.writeQuery({
-            query: GET_COUNTRIES,
+            query: GET_BRANDS,
             data: { ...cache }
         })
         await this.updateData()
@@ -164,11 +179,11 @@ class App extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <Query query={GET_COUNTRIES} fetchPolicy={"cache-and-network"}>
+                <Query query={GET_BRANDS} fetchPolicy={"cache-and-network"}>
                     {({ loading, error, data, refetch }) => {
                         this.refetch = refetch;
                         if (error) return error.message;
-                        console.log({ data: loading && !data ? [] : data.getCountries.data.countries})
+                        console.log({ data: loading && !data ? [] : data.getInstallers.data.installers})
                         return (
                             <Grid spacing={1}>
                                 <Grid item xs={3}></Grid>
@@ -185,9 +200,9 @@ class App extends React.Component {
                                     </div>
                                     <MaterialTable
                                         isEditHidden={rowData => ["id"].indexOf(rowData.name) !== -1}
-                                        title={`Countries ${loading && !data ? "( loading )" : ""}`}
+                                        title={`Installers ${loading && !data ? "( loading )" : ""}`}
                                         columns={this.columns}
-                                        data={loading && !data ? [] : data.getCountries.data.countries}
+                                        data={loading && !data ? [] : data.getInstallers.data.installers}
                                         icons={tableIcons}
                                         editable={{
                                             onRowUpdate: (newData, oldData) =>

@@ -40,9 +40,10 @@ const restLink = ApolloLink.from([
     customFetch: (uri, options) => new Promise((resolve, reject) => {
       // Your own (asynchronous) request handler
       fetch(uri, options).then(res => {
+        console.log({res})
         if (res.status === 404) reject({
           result: { message: "Not found" }
-        })
+        }) 
         else resolve(res)
       })
     }),

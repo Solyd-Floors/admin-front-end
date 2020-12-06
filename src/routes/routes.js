@@ -6,6 +6,9 @@ const Countries = lazy(() => import('./countries'));
 const Brands = lazy(() => import('./brands'));
 const Floors = lazy(() => import('./floors'));
 const FloorTypes = lazy(() => import('./floor_types'));
+const FloorCategories = lazy(() => import('./floor_categories'));
+const Installers = lazy(() => import('./installers'));
+const Users = lazy(() => import('./users'));
 
 export default () => {
     return [
@@ -14,5 +17,7 @@ export default () => {
         <Route exact path="/brands" component={Brands} />,
         <Route exact path="/floors" component={Floors} />,
         <Route exact path="/floor_types" component={FloorTypes} />,
+        <Route exact path="/floor_categories" component={FloorCategories} />,
+        <Route exact path="/installers" component={Installers} />,
     ]
 }

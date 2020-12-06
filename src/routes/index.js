@@ -11,6 +11,7 @@ import { Query } from "react-apollo";
 // const GET_CAMPAIGN_CATEGORIES = loader("../gql/queries/get_campaign_categories.graphql")
 
 const Login = lazy(() => import('./login'));
+const Users = lazy(() => import('./users'));
 const Logout = lazy(() => import("./logout"))
 const E404 = lazy(() => import('./E404'));
 
@@ -35,7 +36,7 @@ const Routes = props => {
                                 <Login/>
                             </NotLoggedInProtected>
                         )}/>
-
+                        <Route exact path="/users" component={Users} />,
                         <AdminProtected>
                             <RoutesList/>
                         </AdminProtected>

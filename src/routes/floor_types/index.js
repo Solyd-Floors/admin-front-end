@@ -122,11 +122,15 @@ class App extends React.Component {
         })
         return success ? resolve() : reject();
     }
-    handleRowDelete = async (oldData, resolve) => {
+    handleRowDelete = async (oldData, resolve, reject) => {
         this.setErrorMessages([])
-        let res = await this.props.client.mutate({
-            mutation: getDeleteCountryGQL(oldData.id)
+        let success = await this.handleMutate(() => {
+            return this.props.client.mutate({
+                mutation: getDeleteCountryGQL(oldData.id)
+            })
         })
+        if (!success) return reject();
+
         let cache = await this.props.client.readQuery({
             query: GET_BRANDS
         })
@@ -135,7 +139,6 @@ class App extends React.Component {
             query: GET_BRANDS,
             data: { ...cache }
         })
-        console.log({ res })
         await this.updateData()
         return resolve()
     }

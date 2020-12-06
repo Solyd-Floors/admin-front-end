@@ -21,21 +21,22 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import Alert from '@material-ui/lab/Alert';
 
+import Header from "../header";
 import { withApollo, Query } from "react-apollo";
 
 import { loader } from 'graphql.macro';
-import getDeleteCountryGQL from "../../gql/mutations/delete_country.graphql";
-import getUpdateCampaignCategoryGQL from "../../gql/mutations/update_country.graphql";
+import getDeteleteUserGQL from "../../gql/mutations/delete_user.graphql";
+import getUpdateUserGQL from "../../gql/mutations/update_user.graphql";
 
-import campaignCategorySchema from "./validations";
+import usersSchema from "./validations";
 import removeNullProperties from "../../helpers/removeNullProperties";
-import { Route, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
+import { compose } from "recompose";
+import qs from "qs";
 import { Button } from '@material-ui/core';
 
-const GET_COUNTRIES = loader("../../gql/queries/get_countries.graphql")
-const POST_COUNTRIES = loader("../../gql/mutations/post_countries.graphql")
-const GET_CAMPAIGNS = loader("../../gql/queries/get_campaigns.graphql")
 const GET_USERS = loader("../../gql/queries/get_users.graphql") 
+const POST_USERS = loader("../../gql/mutations/post_users.graphql")
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <Button style={{ backgroundColor: "#3f51b5", width: "100px" }} size="large" color="primary" {...props} ref={ref}><div style={{ color: "white" }}>New</div></Button>),
@@ -58,7 +59,7 @@ const tableIcons = {
 };
 
 class App extends React.Component {
-    constructor(props) {
+    constructor(props){
         super(props);
         this.state = {
             data: [],
@@ -66,10 +67,14 @@ class App extends React.Component {
             errorMessages: []
         }
         this.columns = [
-            { title: "ID", field: "id", hidden: false, editable: false },
-            { title: "name", field: "name", hidden: false },
+            { title: "ID" || "id", field: "id", hidden: false, editable: false },
+            { title: "Email", field: "email" },
+            { title: "Full Name", field: "full_name" },
+            { title: "password", field: "password", render: () => <p>*********</p>, hidden: false },
+            { title: "Admin" || "isAdmin", field: "isAdmin", lookup: { [true]: "Yes", [false]: "No" }},
+            { title: "", field: "search_by_id", hidden: false, editable: false, render: () => <p></p> },
         ]
-
+        
     }
     setIserror = val => this.setState({ error: val })
     setErrorMessages = val => this.setState({ errorMessages: val })
@@ -77,98 +82,88 @@ class App extends React.Component {
     updateData = async () => {
         try {
             let cache = await this.props.client.readQuery({
-                query: GET_COUNTRIES
+                query: GET_USERS
             })
-            this.setData(cache.getCountries.data.countries)
-        } catch (err) { }
-    }
-    handleMutate = async mutate_function => {
-        let res;
-        try {
-            res = await mutate_function();
-            console.log(res)
-        } catch (err) { 
-            console.log(err.message,err,JSON.stringify(err))
-            if (
-                err.networkError &&
-                err.networkError.result
-            ) {
-                if (err.networkError.result.errors){
-                    this.setErrorMessages(err.networkError.result.errors)
-                } else if(err.networkError.result.code !== 500 && err.networkError.result.message) {
-                    this.setErrorMessages([err.networkError.result.message])
-                } else {
-                    this.setErrorMessages(["Something unexpected happened, please try again!"])
-                }
-            } 
-            return false
-         }
-         return res;
+            this.setData(cache.getUsers.data.users)
+        } catch (err) {}
     }
     handleRowAdd = async (newData, resolve, reject) => {
         let args = removeNullProperties(newData)
-        if (args.CampaignId) args.CampaignId = Number(args.CampaignId)
-        if (args.UserId) args.UserId = Number(args.UserId)
         try {
-            let val = await campaignCategorySchema.validate(args, { abortEarly: false });
-        } catch (err) {
+            let val = await usersSchema.validate(args, { abortEarly: false });
+        } catch(err) {
             this.setErrorMessages(err.errors)
             return reject()
         }
-        let success = await this.handleMutate(() => {
-            return this.props.client.mutate({
-                mutation: POST_COUNTRIES,
+        if (args.contract_id) args.contract_id = String(args.contract_id)
+        if (args.birthday) args.birthday = new Date(args.birthday).toISOString() 
+        if (typeof(args.isAdmin) === "string") args.isAdmin = args.isAdmin === "true" ? true : false
+        try {
+            await this.props.client.mutate({
+                mutation: POST_USERS,
                 variables: args,
-                refetchQueries: [{ query: GET_COUNTRIES }]
+                refetchQueries: [ { query: GET_USERS } ]
             })
-        })
-        return success ? resolve() : reject();
+        } catch(err) {
+            console.log(JSON.parse(JSON.stringify(err)),919)
+            if (err && err.networkError && err.networkError.result && err.networkError.result.code === 422){
+                this.setErrorMessages(err.networkError.result.errors);
+                return reject();
+            }
+        }
+        return resolve();
     }
-    handleRowDelete = async (oldData, resolve, reject) => {
-        this.setErrorMessages([])
-        let success = await this.handleMutate(() => {
-            return this.props.client.mutate({
-                mutation: getDeleteCountryGQL(oldData.id)
-            })
-        })
-        if (!success) return reject();
-
-        let cache = await this.props.client.readQuery({
-            query: GET_COUNTRIES
-        })
-        cache.getCountries.data.countries = cache.getCountries.data.countries.filter(x => x.id != oldData.id)
-        await this.props.client.writeQuery({
-            query: GET_COUNTRIES,
-            data: { ...cache }
-        })
-        await this.updateData()
-        return resolve()
-    }
-    handleRowUpdate = async (newData, oldData, resolve,reject) => {
+    handleRowUpdate = async (newData, oldData, resolve, reject) => {
         this.setErrorMessages([])
         let args = removeNullProperties(newData)
         try {
-            let val = await campaignCategorySchema.validate(args, { abortEarly: false });
-        } catch (err) {
+            let val = await usersSchema.validate(args, { abortEarly: false });
+        } catch(err) {
             this.setErrorMessages(err.errors)
             return reject()
         }
-        let success = await this.handleMutate(() => {
-            return this.props.client.mutate({
-                mutation: getUpdateCampaignCategoryGQL(oldData.id),
-                variables: args
+        if (args.contract_id) args.contract_id = String(args.contract_id)
+        if (args.birthday) args.birthday = new Date(args.birthday).toISOString()
+        if (typeof(args.isAdmin) === "string") args.isAdmin = args.isAdmin === "true" ? true : false
+
+        try {
+            let res = await this.props.client.mutate({
+                mutation: getUpdateUserGQL(oldData.id),
+                variables: args 
             })
-        })
-        return success ? resolve() : reject();
+        } catch(err) {
+            if (err && err.networkError && err.networkError.result && err.networkError.result.errors){
+                this.setErrorMessages(err.networkError.result.errors);
+                return reject();
+            }
+        }
+        return resolve()
     }
-    render() {
+    handleRowDelete = async (oldData, resolve) => {
+        this.setErrorMessages([])
+        let res = await this.props.client.mutate({
+            mutation: getDeteleteUserGQL(oldData.id)
+        })
+        let cache = await this.props.client.readQuery({
+            query: GET_USERS
+        })
+        cache.getUsers.data.users = cache.getUsers.data.users.filter(x => x.id != oldData.id)
+        await this.props.client.writeQuery({
+            query: GET_USERS,
+            data: { ...cache }
+        })
+        console.log({res})
+        await this.updateData()
+        return resolve()
+    }
+    render(){     
         return (
             <React.Fragment>
-                <Query query={GET_COUNTRIES} fetchPolicy={"cache-and-network"}>
-                    {({ loading, error, data, refetch }) => {
+                <Query query={GET_USERS} fetchPolicy={"cache-and-network"}>
+                    {({loading,error,data,refetch}) => {
                         this.refetch = refetch;
                         if (error) return error.message;
-                        console.log({ data: loading && !data ? [] : data.getCountries.data.countries})
+                        let query = qs.parse(this.props.location.search, { ignoreQueryPrefix: true })
                         return (
                             <Grid spacing={1}>
                                 <Grid item xs={3}></Grid>
@@ -185,15 +180,19 @@ class App extends React.Component {
                                     </div>
                                     <MaterialTable
                                         isEditHidden={rowData => ["id"].indexOf(rowData.name) !== -1}
-                                        title={`Countries ${loading && !data ? "( loading )" : ""}`}
+                                        title={`Users ${loading && !data ? "( Loading... )" : ""}`}
                                         columns={this.columns}
-                                        data={loading && !data ? [] : data.getCountries.data.countries}
+                                        data={loading && !data ? [] : data.getUsers.data.users.map(user => ({
+                                            search_by_id: `id:${user.id}`, ...user
+                                        }))}
                                         icons={tableIcons}
+                                        options={{
+                                            searchText: query ? query.search_text : ""
+                                        }}
                                         editable={{
                                             onRowUpdate: (newData, oldData) =>
-                                                new Promise((resolve,reject) => {
+                                                new Promise((resolve, reject) => {
                                                     this.handleRowUpdate(newData, oldData, resolve, reject);
-
                                                 }),
                                             onRowAdd: (newData) =>
                                                 new Promise((resolve, reject) => {
@@ -216,4 +215,4 @@ class App extends React.Component {
     }
 }
 
-export default withApollo(App);
+export default compose(withRouter,withApollo)(App);

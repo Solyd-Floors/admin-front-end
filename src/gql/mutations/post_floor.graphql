@@ -15,7 +15,7 @@ mutation POST_FLOOR(
         }
     ) @rest(
         method: "POST",
-        path: "/floor",
+        path: "/floors",
         type: "PostFloorRequest"
     ) {
         data @type(name: "PostFloorData") {

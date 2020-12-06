@@ -5,27 +5,15 @@ export default id => {
         mutation UPDATE_USER(
             $email: String,
             $password: String,
-            $first_name: String,
-            $last_name: String,
-            $birthday: String,
-            $contract_id: String,
-            $points: Number,
+            $full_name: String,
             $isAdmin: Boolean,
-            $isPremium: Boolean,
-            $isAdvertiser: Boolean
         ) {
             updateUser(
                 input: {
                     email: $email
                     password: $password
-                    first_name: $first_name
-                    last_name: $last_name
-                    birthday: $birthday
-                    contract_id: $contract_id
-                    points: $points
+                    full_name: $full_name
                     isAdmin: $isAdmin
-                    isPremium: $isPremium
-                    isAdvertiser: $isAdvertiser
                 }
             ) @rest(
                 method: "PATCH",
@@ -36,15 +24,10 @@ export default id => {
                     token
                     user @type(name: "User") {
                         id
-                        first_name
-                        last_name
+                        full_name
                         email
-                        birthday
-                        contract_id
-                        points
-                        isPremium
+                        password
                         isAdmin
-                        isAdvertiser
                     }
                 }
             }

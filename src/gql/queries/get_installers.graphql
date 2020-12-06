@@ -1,0 +1,18 @@
+
+query GET_INSTALLER { 
+   getInstallers @rest(type: "GET_INSTALLER_REQUEST", path: "/installers") { 
+        data @type(name: "InstallerTypes") {
+            installers @type(name: "Installer") {
+                id
+                age
+                job_status
+                hourly_rate
+                status
+                profile_picture_url
+                profile_picture
+                CountryId
+                UserId
+            }
+        }
+   } 
+}

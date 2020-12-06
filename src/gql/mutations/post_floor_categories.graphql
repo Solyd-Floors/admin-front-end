@@ -1,0 +1,22 @@
+
+mutation POST_FLOOR_CATEGORIES(
+    $name: String,
+) {
+    postFloorCategories(
+        input: {
+            name: $name
+        }
+    ) @rest(
+        method: "POST",
+        path: "/floor_categories",
+        type: "PostFloorCategoriesRequest"
+    ) {
+        data @type(name: "PostFloorCategoriesData") {
+            token
+            floor_categories @type(name: "FloorCategory") {
+                id
+                name
+            }
+        }
+    }
+}

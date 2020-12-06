@@ -25,15 +25,15 @@ import { withApollo, Query } from "react-apollo";
 
 import { loader } from 'graphql.macro';
 import getDeleteCountryGQL from "../../gql/mutations/delete_floor.graphql";
-import getUpdateCampaignCategoryGQL from "../../gql/mutations/update_floor_type.graphql";
+import getUpdateCampaignCategoryGQL from "../../gql/mutations/update_floor.graphql";
 
 import campaignCategorySchema from "./validations";
 import removeNullProperties from "../../helpers/removeNullProperties";
 import { Route, Link } from 'react-router-dom';
 import { Button } from '@material-ui/core';
 
-const GET_BRANDS = loader("../../gql/queries/get_floor_types.graphql")
-const POST_BRANDS = loader("../../gql/mutations/post_floor_types.graphql")
+const GET_BRANDS = loader("../../gql/queries/get_floors.graphql")
+const POST_BRANDS = loader("../../gql/mutations/post_floor.graphql")
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <Button style={{ backgroundColor: "#3f51b5", width: "100px" }} size="large" color="primary" {...props} ref={ref}><div style={{ color: "white" }}>New</div></Button>),
@@ -67,12 +67,12 @@ class App extends React.Component {
             { title: "ID", field: "id", hidden: false, editable: false },
             { title: "Thumbnail", field: "thumbnail_url" },
             { title: "Name", field: "name", hidden: false },
-            { title: "Price", field: "price", type: "number" },
-            { title: "Quantity", field: "quantity", type: "number" },
-            { title: "FloorCategoryId", field: "FloorCategoryId", type: "number" },
-            { title: "FloorTypeId", field: "FloorTypeId", type: "number" },
-            { title: "BrandId", field: "BrandId", type: "number" },
-            { title: "UserId", field: "UserId", type: "number" },
+            { title: "Price", field: "price", type: "numeric" },
+            { title: "Quantity", field: "quantity", type: "numeric" },
+            { title: "FloorCategoryId", field: "FloorCategoryId", type: "numeric" },
+            { title: "FloorTypeId", field: "FloorTypeId", type: "numeric" },
+            { title: "BrandId", field: "BrandId", type: "numeric" },
+            { title: "UserId", field: "UserId", type: "numeric" },
         ]
 
     }
@@ -91,7 +91,6 @@ class App extends React.Component {
         let res;
         try {
             res = await mutate_function();
-            console.log(res,82828)
         } catch (err) { 
             console.log(JSON.stringify(err),"SADDDSAADS")
             if (
@@ -129,11 +128,15 @@ class App extends React.Component {
         })
         return success ? resolve() : reject();
     }
-    handleRowDelete = async (oldData, resolve) => {
+    handleRowDelete = async (oldData, resolve, reject) => {
         this.setErrorMessages([])
-        let res = await this.props.client.mutate({
-            mutation: getDeleteCountryGQL(oldData.id)
+        let success = await this.handleMutate(() => {
+            return this.props.client.mutate({
+                mutation: getDeleteCountryGQL(oldData.id)
+            })
         })
+        if (!success) return reject();
+
         let cache = await this.props.client.readQuery({
             query: GET_BRANDS
         })
@@ -142,7 +145,6 @@ class App extends React.Component {
             query: GET_BRANDS,
             data: { ...cache }
         })
-        console.log({ res })
         await this.updateData()
         return resolve()
     }
@@ -170,7 +172,7 @@ class App extends React.Component {
                     {({ loading, error, data, refetch }) => {
                         this.refetch = refetch;
                         if (error) return error.message;
-                        console.log({ data: loading && !data ? [] : data.getFloorTypes.data.floor_types})
+                        console.log({ data: loading && !data ? [] : data.getFloors.data.floors})
                         return (
                             <Grid spacing={1}>
                                 <Grid item xs={3}></Grid>
@@ -189,7 +191,7 @@ class App extends React.Component {
                                         isEditHidden={rowData => ["id"].indexOf(rowData.name) !== -1}
                                         title={`Floors ${loading && !data ? "( loading )" : ""}`}
                                         columns={this.columns}
-                                        data={loading && !data ? [] : data.getFloorTypes.data.floor_types}
+                                        data={loading && !data ? [] : data.getFloors.data.floors}
                                         icons={tableIcons}
                                         editable={{
                                             onRowUpdate: (newData, oldData) =>

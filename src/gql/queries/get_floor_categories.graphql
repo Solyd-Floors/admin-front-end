@@ -1,0 +1,11 @@
+
+query GET_FLOOR_CATEGORIES { 
+   getFloorCategories @rest(type: "GET_FLOOR_CATEGORIES_REQUEST", path: "/floor_categories") { 
+        data @type(name: "FloorCategory") {
+            floor_categories @type(name: "FloorCategory") {
+                id
+                name
+            }
+        }
+   } 
+}

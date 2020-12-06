@@ -2,7 +2,7 @@ import React from "react";
 
 class Logout extends React.Component {
     componentDidMount(){
-        localStorage.setItem("auth:token","")
+        localStorage.setItem("solyd_floors:token","")
         localStorage.setItem("user:role",false)
         window.location.href = "/";
     }
