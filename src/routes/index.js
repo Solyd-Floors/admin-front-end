@@ -7,6 +7,7 @@ import NotLoggedInProtected from "../components/NotLoggedInProtected";
 import Header from "./header"
 import { loader } from 'graphql.macro';
 import { Query } from "react-apollo";
+import Header2 from "./header2";
 
 // const GET_CAMPAIGN_CATEGORIES = loader("../gql/queries/get_campaign_categories.graphql")
 
@@ -21,7 +22,8 @@ const Routes = props => {
             <div className="row">
                 <div className="column">
                 <AdminProtected>
-                    <Header/>
+                    <Header/><br/>
+                    <Header2/>
                 </AdminProtected>
                 </div>
                 <div style={{width: "100%", height: "100%"}} className="column">

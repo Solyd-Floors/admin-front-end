@@ -1,0 +1,28 @@
+
+mutation POST_TEAM_MEMBERS(
+    $full_name: String,
+    $position: String,
+    $description: String,
+) {
+    postTeamMember(
+        input: {
+            full_name: $full_name
+            position: $position
+            description: $description
+        }
+    ) @rest(
+        method: "POST",
+        path: "/team_members",
+        type: "PostTeamMemberRequest"
+    ) {
+        data @type(name: "PostTeamMemberData") {
+            token
+            team_members @type(name: "TeamMember") {
+                id
+                full_name
+                position
+                description
+            }
+        }
+    }
+}

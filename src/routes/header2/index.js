@@ -37,16 +37,7 @@ function TabsWrappedLabel(props) {
         <div className={classes.root}>
             <AppBar position="static">
                 <Tabs value={props.location.pathname} onChange={handleChange} aria-label="wrapped label tabs example">
-                    <Tab value="/dashboard" label="Dashboard" wrapped {...a11yProps('one')} />
-                    <Tab value="/users" label="Users" wrapped {...a11yProps('one')} />
-                    <Tab value="/contacts" label="Contacts" wrapped {...a11yProps('one')} />
-                    <Tab value="/installers" label="Installers" wrapped {...a11yProps('one')} />
-                    <Tab value="/countries" label="Countries" wrapped {...a11yProps('one')} />
-                    <Tab value="/brands" label="Brands" wrapped {...a11yProps('one')} />
-                    <Tab value="/floors" label="Floors" wrapped {...a11yProps('one')} />
-                    <Tab value="/floor_types" label="FloorTypes" wrapped {...a11yProps('one')} />
-                    <Tab value="/floor_categories" label="FloorCategories" wrapped {...a11yProps('one')} />
-                    <Tab style={{backgroundColor: "red"}} value="/logout" label="Logout" {...a11yProps('three')} />
+                    <Tab value="/team_members" label="Team Members" wrapped {...a11yProps('one')} />
                 </Tabs>
             </AppBar>
         </div>

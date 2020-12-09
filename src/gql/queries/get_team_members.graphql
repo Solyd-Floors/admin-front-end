@@ -1,0 +1,13 @@
+
+query GET_TEAM_MEMBERS { 
+   getTeamMembers @rest(type: "GET_TEAM_MEMBERS_REQUEST", path: "/team_members") { 
+        data @type(name: "TeamMembers") {
+            team_members @type(name: "TeamMember") {
+                id
+                full_name
+                position
+                description
+            }
+        }
+   } 
+}

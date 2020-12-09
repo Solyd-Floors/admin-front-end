@@ -21,22 +21,19 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import Alert from '@material-ui/lab/Alert';
 
-import Header from "../header";
 import { withApollo, Query } from "react-apollo";
 
 import { loader } from 'graphql.macro';
-import getDeteleteUserGQL from "../../gql/mutations/delete_user.graphql";
-import getUpdateUserGQL from "../../gql/mutations/update_user.graphql";
+import getDeleteCountryGQL from "../../gql/mutations/delete_team_members.graphql";
+import getUpdateCampaignCategoryGQL from "../../gql/mutations/update_team_members.graphql";
 
-import usersSchema from "./validations";
+import campaignCategorySchema from "./validations";
 import removeNullProperties from "../../helpers/removeNullProperties";
-import { withRouter } from 'react-router-dom';
-import { compose } from "recompose";
-import qs from "qs";
+import { Route, Link } from 'react-router-dom';
 import { Button } from '@material-ui/core';
 
-const GET_USERS = loader("../../gql/queries/get_users.graphql") 
-const POST_USERS = loader("../../gql/mutations/post_users.graphql")
+const GET_BRANDS = loader("../../gql/queries/get_team_members.graphql")
+const POST_BRANDS = loader("../../gql/mutations/post_team_members.graphql")
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <Button style={{ backgroundColor: "#3f51b5", width: "100px" }} size="large" color="primary" {...props} ref={ref}><div style={{ color: "white" }}>New</div></Button>),
@@ -59,7 +56,7 @@ const tableIcons = {
 };
 
 class App extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             data: [],
@@ -67,14 +64,12 @@ class App extends React.Component {
             errorMessages: []
         }
         this.columns = [
-            { title: "ID" || "id", field: "id", hidden: false, editable: false },
-            { title: "Email", field: "email" },
-            { title: "Full Name", field: "full_name" },
-            { title: "password", field: "password", render: () => <p>*********</p>, hidden: false },
-            { title: "Admin" || "isAdmin", field: "isAdmin", lookup: { [true]: "Yes", [false]: "No" }},
-            { title: "", field: "search_by_id", hidden: false, editable: false, render: () => <p></p> },
+            { title: "ID", field: "id", hidden: false, editable: false },
+            { title: "full_name", field: "full_name", hidden: false },
+            { title: "position", field: "position", hidden: false },
+            { title: "description", field: "description", hidden: false },
         ]
-        
+
     }
     setIserror = val => this.setState({ error: val })
     setErrorMessages = val => this.setState({ errorMessages: val })
@@ -82,88 +77,98 @@ class App extends React.Component {
     updateData = async () => {
         try {
             let cache = await this.props.client.readQuery({
-                query: GET_USERS
+                query: GET_BRANDS
             })
-            this.setData(cache.getUsers.data.users)
-        } catch (err) {}
+            this.setData(cache.getTeamMembers.data.team_members)
+        } catch (err) { }
+    }
+    handleMutate = async mutate_function => {
+        let res;
+        try {
+            res = await mutate_function();
+            console.log(res,82828)
+        } catch (err) { 
+            console.log(JSON.stringify(err),"SADDDSAADS")
+            if (
+                err.networkError &&
+                err.networkError.result
+            ) {
+                if (err.networkError.result.errors){
+                    this.setErrorMessages(err.networkError.result.errors)
+                } else if(err.networkError.result.code !== 500 && err.networkError.result.message) {
+                    this.setErrorMessages([err.networkError.result.message])
+                } else {
+                    this.setErrorMessages(["Something unexpected happened, please try again!"])
+                }
+            } 
+            return false
+         }
+         return res;
     }
     handleRowAdd = async (newData, resolve, reject) => {
         let args = removeNullProperties(newData)
+        if (args.CampaignId) args.CampaignId = Number(args.CampaignId)
+        if (args.UserId) args.UserId = Number(args.UserId)
         try {
-            let val = await usersSchema.validate(args, { abortEarly: false });
-        } catch(err) {
+            let val = await campaignCategorySchema.validate(args, { abortEarly: false });
+        } catch (err) {
             this.setErrorMessages(err.errors)
             return reject()
         }
-        if (args.contract_id) args.contract_id = String(args.contract_id)
-        if (args.birthday) args.birthday = new Date(args.birthday).toISOString() 
-        if (typeof(args.isAdmin) === "string") args.isAdmin = args.isAdmin === "true" ? true : false
-        try {
-            await this.props.client.mutate({
-                mutation: POST_USERS,
+        let success = await this.handleMutate(() => {
+            return this.props.client.mutate({
+                mutation: POST_BRANDS,
                 variables: args,
-                refetchQueries: [ { query: GET_USERS } ]
+                refetchQueries: [{ query: GET_BRANDS }]
             })
-        } catch(err) {
-            console.log(JSON.parse(JSON.stringify(err)),919)
-            if (err && err.networkError && err.networkError.result && err.networkError.result.code === 422){
-                this.setErrorMessages(err.networkError.result.errors);
-                return reject();
-            }
-        }
-        return resolve();
+        })
+        return success ? resolve() : reject();
     }
-    handleRowUpdate = async (newData, oldData, resolve, reject) => {
+    handleRowDelete = async (oldData, resolve, reject) => {
         this.setErrorMessages([])
-        let args = removeNullProperties(newData)
-        try {
-            let val = await usersSchema.validate(args, { abortEarly: false });
-        } catch(err) {
-            this.setErrorMessages(err.errors)
-            return reject()
-        }
-        if (args.contract_id) args.contract_id = String(args.contract_id)
-        if (args.birthday) args.birthday = new Date(args.birthday).toISOString()
-        if (typeof(args.isAdmin) === "string") args.isAdmin = args.isAdmin === "true" ? true : false
+        let success = await this.handleMutate(() => {
+            return this.props.client.mutate({
+                mutation: getDeleteCountryGQL(oldData.id)
+            })
+        })
+        if (!success) return reject();
 
-        try {
-            let res = await this.props.client.mutate({
-                mutation: getUpdateUserGQL(oldData.id),
-                variables: args 
-            })
-        } catch(err) {
-            if (err && err.networkError && err.networkError.result && err.networkError.result.errors){
-                this.setErrorMessages(err.networkError.result.errors);
-                return reject();
-            }
-        }
-        return resolve()
-    }
-    handleRowDelete = async (oldData, resolve) => {
-        this.setErrorMessages([])
-        let res = await this.props.client.mutate({
-            mutation: getDeteleteUserGQL(oldData.id)
-        })
         let cache = await this.props.client.readQuery({
-            query: GET_USERS
+            query: GET_BRANDS
         })
-        cache.getUsers.data.users = cache.getUsers.data.users.filter(x => x.id != oldData.id)
+        cache.getTeamMembers.data.team_members = cache.getTeamMembers.data.team_members.filter(x => x.id != oldData.id)
         await this.props.client.writeQuery({
-            query: GET_USERS,
+            query: GET_BRANDS,
             data: { ...cache }
         })
-        console.log({res})
         await this.updateData()
         return resolve()
     }
-    render(){     
+    handleRowUpdate = async (newData, oldData, resolve,reject) => {
+        this.setErrorMessages([])
+        let args = removeNullProperties(newData)
+        try {
+            let val = await campaignCategorySchema.validate(args, { abortEarly: false });
+        } catch (err) {
+            this.setErrorMessages(err.errors)
+            return reject()
+        }
+        let success = await this.handleMutate(() => {
+            return this.props.client.mutate({
+                mutation: getUpdateCampaignCategoryGQL(oldData.id),
+                variables: args
+            })
+        })
+        return success ? resolve() : reject();
+    }
+    render() {
         return (
             <React.Fragment>
-                <Query query={GET_USERS} fetchPolicy={"cache-and-network"}>
-                    {({loading,error,data,refetch}) => {
+                <Query query={GET_BRANDS} fetchPolicy={"cache-and-network"}>
+                    {({ loading, error, data, refetch }) => {
                         this.refetch = refetch;
                         if (error) return error.message;
-                        let query = qs.parse(this.props.location.search, { ignoreQueryPrefix: true })
+                        console.log({ data: loading && !data ? [] : data.getTeamMembers.data.team_members})
                         return (
                             <Grid spacing={1}>
                                 <Grid item xs={3}></Grid>
@@ -180,19 +185,15 @@ class App extends React.Component {
                                     </div>
                                     <MaterialTable
                                         isEditHidden={rowData => ["id"].indexOf(rowData.name) !== -1}
-                                        title={`Users ${loading && !data ? "( Loading... )" : ""}`}
-                                        columns={this.columns.map((c) => ({ ...c, tableData: undefined }))} 
-                                        data={loading && !data ? [] : data.getUsers.data.users.map(user => ({
-                                            search_by_id: `id:${user.id}`, ...user
-                                        }))}
+                                        title={`Team Members ${loading && !data ? "( loading )" : ""}`}
+                                        columns={this.columns}
+                                        data={loading && !data ? [] : data.getTeamMembers.data.team_members}
                                         icons={tableIcons}
-                                        options={{
-                                            searchText: query ? query.search_text : ""
-                                        }}
                                         editable={{
                                             onRowUpdate: (newData, oldData) =>
-                                                new Promise((resolve, reject) => {
+                                                new Promise((resolve,reject) => {
                                                     this.handleRowUpdate(newData, oldData, resolve, reject);
+
                                                 }),
                                             onRowAdd: (newData) =>
                                                 new Promise((resolve, reject) => {
@@ -215,4 +216,4 @@ class App extends React.Component {
     }
 }
 
-export default compose(withRouter,withApollo)(App);
+export default withApollo(App);

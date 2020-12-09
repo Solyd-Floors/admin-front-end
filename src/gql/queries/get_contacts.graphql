@@ -1,0 +1,13 @@
+
+query GET_Contacts { 
+   getContacts @rest(type: "GET_CONTACTS_REQUEST", path: "/contacts") { 
+        data @type(name: "Contacts") {
+            contacts @type(name: "Contact") {
+                id
+                email
+                full_name
+                reason
+            }
+        }
+   } 
+}
