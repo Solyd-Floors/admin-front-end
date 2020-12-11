@@ -6,6 +6,7 @@ const Countries = lazy(() => import('./countries'));
 const Contacts = lazy(() => import('./contacts'));
 const TeamMembers = lazy(() => import('./team_members'));
 const Brands = lazy(() => import('./brands'));
+const Videos = lazy(() => import('./videos'));
 const Floors = lazy(() => import('./floors'));
 const FloorTypes = lazy(() => import('./floor_types'));
 const FloorCategories = lazy(() => import('./floor_categories'));
@@ -16,6 +17,7 @@ export default () => {
     return [
         <Route exact path="/dashboard" component={Dashboard} />,
         <Route exact path="/countries" component={Countries} />,
+        <Route exact path="/videos" component={Videos} />,
         <Route exact path="/team_members" component={TeamMembers} />,
         <Route exact path="/contacts" component={Contacts} />,
         <Route exact path="/brands" component={Brands} />,

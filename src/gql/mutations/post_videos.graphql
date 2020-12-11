@@ -1,0 +1,28 @@
+
+mutation POST_VIDEOS(
+    $youtube_url: String,
+    $title: String,
+    $description: String,
+) {
+    postVideo(
+        input: {
+            youtube_url: $youtube_url
+            title: $title
+            description: $description
+        }
+    ) @rest(
+        method: "POST",
+        path: "/videos",
+        type: "PostVideoRequest"
+    ) {
+        data @type(name: "PostVideoData") {
+            token
+            videos @type(name: "Video") {
+                id
+                youtube_url
+                title
+                description
+            }
+        }
+    }
+}

@@ -24,16 +24,16 @@ import Alert from '@material-ui/lab/Alert';
 import { withApollo, Query } from "react-apollo";
 
 import { loader } from 'graphql.macro';
-import getDeleteCountryGQL from "../../gql/mutations/delete_country.graphql";
-import getUpdateCampaignCategoryGQL from "../../gql/mutations/update_country.graphql";
+import getDeleteCountryGQL from "../../gql/mutations/delete_videos.graphql";
+import getUpdateCampaignCategoryGQL from "../../gql/mutations/update_videos.graphql";
 
 import campaignCategorySchema from "./validations";
 import removeNullProperties from "../../helpers/removeNullProperties";
 import { Route, Link } from 'react-router-dom';
 import { Button } from '@material-ui/core';
 
-const GET_COUNTRIES = loader("../../gql/queries/get_countries.graphql")
-const POST_COUNTRIES = loader("../../gql/mutations/post_countries.graphql")
+const GET_BRANDS = loader("../../gql/queries/get_videos.graphql")
+const POST_BRANDS = loader("../../gql/mutations/post_videos.graphql")
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <Button style={{ backgroundColor: "#3f51b5", width: "100px" }} size="large" color="primary" {...props} ref={ref}><div style={{ color: "white" }}>New</div></Button>),
@@ -65,7 +65,9 @@ class App extends React.Component {
         }
         this.columns = [
             { title: "ID", field: "id", hidden: false, editable: false },
-            { title: "name", field: "name", hidden: false },
+            { title: "youtube_url", field: "youtube_url", hidden: false },
+            { title: "title", field: "title", hidden: false },
+            { title: "description", field: "description", hidden: false },
         ]
 
     }
@@ -75,18 +77,18 @@ class App extends React.Component {
     updateData = async () => {
         try {
             let cache = await this.props.client.readQuery({
-                query: GET_COUNTRIES
+                query: GET_BRANDS
             })
-            this.setData(cache.getCountries.data.countries)
+            this.setData(cache.getVideos.data.videos)
         } catch (err) { }
     }
     handleMutate = async mutate_function => {
         let res;
         try {
             res = await mutate_function();
-            console.log(res)
+            console.log(res,82828)
         } catch (err) { 
-            console.log(err.message,err,JSON.stringify(err))
+            console.log(JSON.stringify(err),"SADDDSAADS")
             if (
                 err.networkError &&
                 err.networkError.result
@@ -115,9 +117,9 @@ class App extends React.Component {
         }
         let success = await this.handleMutate(() => {
             return this.props.client.mutate({
-                mutation: POST_COUNTRIES,
+                mutation: POST_BRANDS,
                 variables: args,
-                refetchQueries: [{ query: GET_COUNTRIES }]
+                refetchQueries: [{ query: GET_BRANDS }]
             })
         })
         return success ? resolve() : reject();
@@ -132,11 +134,11 @@ class App extends React.Component {
         if (!success) return reject();
 
         let cache = await this.props.client.readQuery({
-            query: GET_COUNTRIES
+            query: GET_BRANDS
         })
-        cache.getCountries.data.countries = cache.getCountries.data.countries.filter(x => x.id != oldData.id)
+        cache.getVideos.data.videos = cache.getVideos.data.videos.filter(x => x.id != oldData.id)
         await this.props.client.writeQuery({
-            query: GET_COUNTRIES,
+            query: GET_BRANDS,
             data: { ...cache }
         })
         await this.updateData()
@@ -162,11 +164,10 @@ class App extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <Query query={GET_COUNTRIES} fetchPolicy={"cache-and-network"}>
+                <Query query={GET_BRANDS} fetchPolicy={"cache-and-network"}>
                     {({ loading, error, data, refetch }) => {
                         this.refetch = refetch;
                         if (error) return error.message;
-                        console.log({ data: loading && !data ? [] : data.getCountries.data.countries})
                         return (
                             <Grid spacing={1}>
                                 <Grid item xs={3}></Grid>
@@ -183,9 +184,9 @@ class App extends React.Component {
                                     </div>
                                     <MaterialTable
                                         isEditHidden={rowData => ["id"].indexOf(rowData.name) !== -1}
-                                        title={`Countries ${loading && !data ? "( loading )" : ""}`}
+                                        title={`Videos ${loading && !data ? "( loading )" : ""}`}
                                         columns={this.columns}
-                                        data={loading && !data ? [] : data.getCountries.data.countries}
+                                        data={loading && !data ? [] : data.getVideos.data.videos}
                                         icons={tableIcons}
                                         editable={{
                                             onRowUpdate: (newData, oldData) =>

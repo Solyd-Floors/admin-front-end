@@ -27,7 +27,7 @@ const Routes = props => {
                 </AdminProtected>
                 </div>
                 <div style={{width: "100%", height: "100%"}} className="column">
-                    <Suspense fallback={<div>Loading...</div>}>
+                    <Suspense fallback={<div></div>}>
                     <Switch>
                         <Route exact path="/logout" component={Logout} />
                         <Route exact path="/">

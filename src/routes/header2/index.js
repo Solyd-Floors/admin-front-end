@@ -38,6 +38,7 @@ function TabsWrappedLabel(props) {
             <AppBar position="static">
                 <Tabs value={props.location.pathname} onChange={handleChange} aria-label="wrapped label tabs example">
                     <Tab value="/team_members" label="Team Members" wrapped {...a11yProps('one')} />
+                    <Tab value="/videos" label="Videos" wrapped {...a11yProps('one')} />
                 </Tabs>
             </AppBar>
         </div>

@@ -1,0 +1,13 @@
+
+query GET_VIDEOS { 
+   getVideos @rest(type: "GET_VIDEOS_REQUEST", path: "/videos") { 
+        data @type(name: "Videos") {
+            videos @type(name: "Video") {
+                id
+                youtube_url
+                title
+                description
+            }
+        }
+   } 
+}
