@@ -31,6 +31,7 @@ import campaignCategorySchema from "./validations";
 import removeNullProperties from "../../helpers/removeNullProperties";
 import { Route, Link } from 'react-router-dom';
 import { Button } from '@material-ui/core';
+import Axios from 'axios';
 
 const GET_BRANDS = loader("../../gql/queries/get_floors.graphql")
 const POST_BRANDS = loader("../../gql/mutations/post_floor.graphql")
@@ -55,6 +56,47 @@ const tableIcons = {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
+function objectToFormData(obj, rootName, ignoreList) {
+    var formData = new FormData();
+
+    function appendFormData(data, root) {
+        if (!ignore(root)) {
+            root = root || '';
+            if (data instanceof File) {
+                formData.append(root, data);
+            } else if (Array.isArray(data)) {
+                for (var i = 0; i < data.length; i++) {
+                    appendFormData(data[i], root + '[' + i + ']');
+                }
+            } else if (typeof data === 'object' && data) {
+                for (var key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        if (root === '') {
+                            appendFormData(data[key], key);
+                        } else {
+                            appendFormData(data[key], root + '.' + key);
+                        }
+                    }
+                }
+            } else {
+                if (data !== null && typeof data !== 'undefined') {
+                    formData.append(root, data);
+                }
+            }
+        }
+    }
+
+    function ignore(root) {
+        return Array.isArray(ignoreList)
+            && ignoreList.some(function (x) { return x === root; });
+    }
+
+    appendFormData(obj, rootName);
+
+    return formData;
+}
+
+
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -63,9 +105,51 @@ class App extends React.Component {
             iserror: false,
             errorMessages: []
         }
+        this.images = {}
         this.columns = [
             { title: "ID", field: "id", hidden: false, editable: false },
-            { title: "Thumbnail", field: "thumbnail_url" },
+            { title: "thumbnail", field: "thumbnail_url",
+                render: data => <img 
+                    width={50}
+                    height={50}
+                    src={data.thumbnail_url}
+                />,
+                editComponent: tableData => {
+                    let rowData = tableData.rowData;
+                    console.log(JSON.stringify(tableData))
+                    return (
+                        <React.Fragment>
+                            <input onChange={(e) => {
+                                let file = e.target.files[0]
+                                var fr = new FileReader();
+                                fr.onload = d => {
+                                    console.log("ON_LOAD")
+                                    let src = d.srcElement.result;
+                                    if (!this.images[rowData.id]) this.images[rowData.id] = {}
+                                    this.images[rowData.id].thumbnail = { src, file };
+                                    this["thumbnail"].src = (
+                                        this.images[rowData.id] && this.images[rowData.id].thumbnail &&
+                                        this.images[rowData.id].thumbnail.src
+                                    ) || rowData.thumbnail_url || "https://fomantic-ui.com/images/wireframe/image.png"   
+                            }
+                                fr.readAsDataURL(file);
+
+                            }} type="file" hidden ref={ref => this["thumbnail_input"] = ref} />
+                            <img 
+                                ref={ref => this["thumbnail"] = ref}
+                                src={
+                                    (
+                                        this.images[rowData.id] && this.images[rowData.id].thumbnail &&
+                                        this.images[rowData.id].thumbnail.src
+                                    ) || rowData.thumbnail_url || "https://fomantic-ui.com/images/wireframe/image.png"                                    }
+                                width={50}
+                                height={50}
+                                onClick={() => this["thumbnail_input"].click()}
+                            />
+                        </React.Fragment>
+                    )
+                },
+            },            
             { title: "Name", field: "name", hidden: false },
             { title: "Price", field: "price", type: "numeric" },
             { title: "Quantity", field: "quantity", type: "numeric" },
@@ -109,24 +193,76 @@ class App extends React.Component {
          }
          return res;
     }
-    handleRowAdd = async (newData, resolve, reject) => {
+    handleAddUpdate = async (newData, resolve, reject, type, oldData) => {
+        this.setErrorMessages([])
+        this.onAction = undefined;
+        let files = { }
         let args = removeNullProperties(newData)
-        if (args.CampaignId) args.CampaignId = Number(args.CampaignId)
+        if (isNaN(args.points)) args.points = "null"
+        else if (typeof(args.points) === "number") args.points = String(args.points)
+
+        if (this.onAddEditAddressInputRef) args.address = this.onAddEditAddressInputRef.value
+        if (args.CampaignCategoryId) args.CampaignCategoryId = Number(args.CampaignCategoryId)
         if (args.UserId) args.UserId = Number(args.UserId)
+        let images = type === "post" ? this.images[undefined] : this.images[oldData.id]
+        if (images){
+            if (images.thumbnail) {
+                files["thumbnail"] = images.thumbnail.file
+                args["thumbnail"] = "pass-validation"
+            }
+        }
         try {
             let val = await campaignCategorySchema.validate(args, { abortEarly: false });
         } catch (err) {
             this.setErrorMessages(err.errors)
             return reject()
         }
-        let success = await this.handleMutate(() => {
-            return this.props.client.mutate({
-                mutation: POST_BRANDS,
-                variables: args,
-                refetchQueries: [{ query: GET_BRANDS }]
+        // switch from base64 to files
+        let fixed_args = { ...args, ...files };
+        console.log({ fixed_args})
+        let formData = objectToFormData(fixed_args);
+        console.log({formData})
+        let res;
+        let id = type.indexOf("patch") !== -1 ? `/${type.split("_")[1]}` : "" 
+        type = type.indexOf("patch") !== -1 ? "patch" : "post"
+        try {
+            return await Axios[type](`${window.__API_ENDPOINT__}/floors${id}`, formData, {
+                headers: { 
+                    'Content-Type': 'multipart/form-data',
+                    "authorization": `Bearer ${localStorage.getItem("solyd_floors:token")}` 
+                }
             })
+        } catch (err) {
+            this.setErrorMessages(err.response.data.errors)
+            return reject()
+        }
+    }
+    handleRowAdd = async (newData, resolve, reject) => {
+        let res = await this.handleAddUpdate(newData, resolve, reject, "post")
+        if (!res) return reject();
+        let cache = this.props.client.readQuery({ query: GET_BRANDS });
+        console.log({cache,res});
+        cache.getFloors.data.floors.push({
+            __typename: "Floor",
+            ...res.data.data.floor,
+            thumbnail: res.data.data.floor.thumbnail_url
         })
-        return success ? resolve() : reject();
+        this.props.client.writeQuery({ query: GET_BRANDS, data: cache })
+        return resolve();
+    }
+    handleRowUpdate = async (newData, oldData, resolve,reject) => {
+        let res = await this.handleAddUpdate(newData, resolve, reject, `patch_${oldData.id}`,oldData)
+        if (!res) return reject();
+        let cache = this.props.client.readQuery({ query: GET_BRANDS });
+        console.log({cache,res});
+        cache.getFloors.data.floors = cache.getFloors.data.floors.filter(x => x.id !== res.data.data.floor.id)
+        cache.getFloors.data.floors.push({
+            __typename: "Floor",
+            ...res.data.data.floor,
+            thumbnail: res.data.data.floor.thumbnail_url
+        })
+        this.props.client.writeQuery({ query: GET_BRANDS, data: cache })
+        return resolve();
     }
     handleRowDelete = async (oldData, resolve, reject) => {
         this.setErrorMessages([])
@@ -147,23 +283,6 @@ class App extends React.Component {
         })
         await this.updateData()
         return resolve()
-    }
-    handleRowUpdate = async (newData, oldData, resolve,reject) => {
-        this.setErrorMessages([])
-        let args = removeNullProperties(newData)
-        try {
-            let val = await campaignCategorySchema.validate(args, { abortEarly: false });
-        } catch (err) {
-            this.setErrorMessages(err.errors)
-            return reject()
-        }
-        let success = await this.handleMutate(() => {
-            return this.props.client.mutate({
-                mutation: getUpdateCampaignCategoryGQL(oldData.id),
-                variables: args
-            })
-        })
-        return success ? resolve() : reject();
     }
     render() {
         return (

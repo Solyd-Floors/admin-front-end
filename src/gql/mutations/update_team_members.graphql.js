@@ -22,6 +22,7 @@ export default id => {
                     token
                     team_member @type(name: "TeamMember") {
                         id
+                        profile_picture_url
                         full_name
                         position
                         description

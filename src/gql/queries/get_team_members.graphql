@@ -4,6 +4,7 @@ query GET_TEAM_MEMBERS {
         data @type(name: "TeamMembers") {
             team_members @type(name: "TeamMember") {
                 id
+                profile_picture_url
                 full_name
                 position
                 description

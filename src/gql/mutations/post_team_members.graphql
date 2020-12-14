@@ -21,6 +21,7 @@ mutation POST_TEAM_MEMBERS(
                 id
                 full_name
                 position
+                profile_picture_url
                 description
             }
         }
