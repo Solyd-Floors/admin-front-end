@@ -5,6 +5,7 @@ query GET_FLOOR {
             floors @type(name: "Floor") {
                 id
                 name
+                description
                 thumbnail_url
                 price
                 quantity
@@ -12,6 +13,7 @@ query GET_FLOOR {
                 FloorTypeId
                 BrandId
                 UserId
+                ColorId
             }
         }
    } 

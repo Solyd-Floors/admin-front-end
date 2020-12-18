@@ -23,6 +23,7 @@
     "graphql-tag": "^2.11.0",
     "graphql.macro": "^1.4.2",
     "material-table": "^1.67.1",
+    "material-ui-color-picker": "^3.5.1",
     "material-ui-icons": "1.0.0-beta.36",
     "object-to-formdata": "3.0.9",
     "qs": "^6.9.4",

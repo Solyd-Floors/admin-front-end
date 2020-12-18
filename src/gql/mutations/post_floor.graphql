@@ -12,6 +12,7 @@ mutation POST_FLOOR(
             FloorTypeId: $FloorTypeId
             BrandId: $BrandId
             UserId: $UserId
+            ColorId: $ColorId
         }
     ) @rest(
         method: "POST",
@@ -23,6 +24,7 @@ mutation POST_FLOOR(
             floor @type(name: "Floor") {
                 id
                 name
+                description
                 thumbnail_url
                 price
                 quantity
@@ -30,6 +32,7 @@ mutation POST_FLOOR(
                 FloorTypeId
                 BrandId
                 UserId
+                ColorId
             }
         }
     }

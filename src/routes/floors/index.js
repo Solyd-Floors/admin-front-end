@@ -151,12 +151,14 @@ class App extends React.Component {
                 },
             },            
             { title: "Name", field: "name", hidden: false },
+            { title: "Description", field: "description", hidden: false },
             { title: "Price", field: "price", type: "numeric" },
             { title: "Quantity", field: "quantity", type: "numeric" },
             { title: "FloorCategoryId", field: "FloorCategoryId", type: "numeric" },
             { title: "FloorTypeId", field: "FloorTypeId", type: "numeric" },
             { title: "BrandId", field: "BrandId", type: "numeric" },
             { title: "UserId", field: "UserId", type: "numeric" },
+            { title: "ColorId", field: "ColorId", type: "numeric" },
         ]
 
     }

@@ -8,6 +8,7 @@ export default id => {
             updateFloor(
                 input: {
                     name: $name
+                    description: $description
                     thumbnail_url: $thumbnail_url
                     price: $price
                     quantity: $quantity
@@ -15,6 +16,7 @@ export default id => {
                     FloorTypeId: $FloorTypeId
                     BrandId: $BrandId
                     UserId: $UserId
+                    ColorId: $ColorId
                 }
             ) @rest(
                 method: "PATCH",
@@ -26,6 +28,7 @@ export default id => {
                     floor @type(name: "Floor") {
                         id
                         name
+                        description
                         thumbnail_url
                         price
                         quantity
@@ -33,6 +36,7 @@ export default id => {
                         FloorTypeId
                         BrandId
                         UserId                    
+                        ColorId                    
                     }
                 }
             }

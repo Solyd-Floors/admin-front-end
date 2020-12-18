@@ -1,0 +1,25 @@
+
+mutation POST_COLORS(
+    $name: String,
+    $color: String,
+) {
+    postColors(
+        input: {
+            name: $name
+            color: $color
+        }
+    ) @rest(
+        method: "POST",
+        path: "/colors",
+        type: "PostColorsRequest"
+    ) {
+        data @type(name: "PostColorsData") {
+            token
+            colors @type(name: "Color") {
+                id
+                name
+                color
+            }
+        }
+    }
+}
