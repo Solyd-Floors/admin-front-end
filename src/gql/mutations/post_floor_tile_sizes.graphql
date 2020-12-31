@@ -1,0 +1,24 @@
+
+mutation POST_FLOOR_TILE_SIZES(
+    $width: Number,
+    $height: Number,
+) {
+    postFloorTileSizes(
+        input: {
+            width: $width
+            height: $height
+        }
+    ) @rest(
+        method: "POST",
+        path: "/floor_tile_sizes",
+        type: "PostFloorTileSizesRequest"
+    ) {
+        data @type(name: "PostFloorTileSizesData") {
+            floor_tile_sizes @type(name: "FloorTileSize") {
+                id
+                width
+                height
+            }
+        }
+    }
+}

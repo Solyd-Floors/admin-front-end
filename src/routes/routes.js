@@ -10,6 +10,7 @@ const Videos = lazy(() => import('./videos'));
 const Colors = lazy(() => import('./colors'));
 const Floors = lazy(() => import('./floors'));
 const FloorTypes = lazy(() => import('./floor_types'));
+const FloorTileSizes = lazy(() => import('./floor_tile_sizes'));
 const FloorCategories = lazy(() => import('./floor_categories'));
 const Installers = lazy(() => import('./installers'));
 const Users = lazy(() => import('./users'));
@@ -25,6 +26,7 @@ export default () => {
         <Route exact path="/brands" component={Brands} />,
         <Route exact path="/floors" component={Floors} />,
         <Route exact path="/floor_types" component={FloorTypes} />,
+        <Route exact path="/floor_tile_sizes" component={FloorTileSizes} />,
         <Route exact path="/floor_categories" component={FloorCategories} />,
         <Route exact path="/installers" component={Installers} />,
     ]

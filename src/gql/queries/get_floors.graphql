@@ -8,7 +8,11 @@ query GET_FLOOR {
                 description
                 thumbnail_url
                 price
-                quantity
+                FloorTileSizes @type(name: "FloorTileSize") {
+                    id
+                    width
+                    height
+                }
                 FloorCategoryId
                 FloorTypeId
                 BrandId

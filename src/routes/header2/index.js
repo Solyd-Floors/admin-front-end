@@ -40,6 +40,7 @@ function TabsWrappedLabel(props) {
                     <Tab value="/team_members" label="Team Members" wrapped {...a11yProps('one')} />
                     <Tab value="/videos" label="Videos" wrapped {...a11yProps('one')} />
                     <Tab value="/colors" label="Colors" wrapped {...a11yProps('one')} />
+                    <Tab value="/floor_tile_sizes" label="Floor Tile Sizes" wrapped {...a11yProps('one')} />
                 </Tabs>
             </AppBar>
         </div>
