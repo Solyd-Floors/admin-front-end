@@ -1,0 +1,15 @@
+
+query GET_FLOOR_BOXES { 
+   getFloorBoxes @rest(type: "GET_FLOOR_BOXES_REQUEST", path: "/floor_boxes") { 
+        data @type(name: "FloorBoxes") {
+            floor_boxes @type(name: "FloorBox") {
+                id
+                SKU
+                mil_type
+                FloorId
+                FloorTileSizeId
+                status
+            }
+        }
+   } 
+}

@@ -1,0 +1,30 @@
+
+mutation POST_FLOOR_BOXES(
+    $mil_type: Int,
+    $FloorId: Int,
+    $name: Int,
+) {
+    postFloorBoxes(
+        input: {
+            mil_type: $mil_type
+            FloorId: $FloorId
+            FloorTileSizeId: $FloorTileSizeId
+        }
+    ) @rest(
+        method: "POST",
+        path: "/floor_boxes",
+        type: "PostFloorBoxesRequest"
+    ) {
+        data @type(name: "PostFloorBoxesData") {
+            token
+            floor_boxes @type(name: "FloorType") {
+                id
+                SKU
+                FloorId
+                mil_type
+                FloorTileSizeId
+                status
+            }
+        }
+    }
+}
