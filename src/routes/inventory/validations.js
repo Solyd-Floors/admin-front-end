@@ -5,4 +5,5 @@ export default yup.object().shape({
     price: yup.number().positive().required(),
     FloorId: yup.number().integer().positive().required(),
     FloorTileSizeId: yup.number().integer().positive().required(),
+    amount: yup.number().integer().positive().required(),
 })

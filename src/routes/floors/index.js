@@ -158,7 +158,6 @@ class App extends React.Component {
             },            
             { title: "Name", field: "name", hidden: false },
             { title: "Description", field: "description", hidden: false },
-            { title: "Price", field: "price", type: "numeric" },
             { title: "Tile sizes", field: "floor_tile_sizes", 
                 render: t => <p>{t.FloorTileSizes.map(x => 
                     floor_tile_sizes_lookup[x.id].show    
@@ -181,7 +180,6 @@ class App extends React.Component {
             { title: "FloorCategoryId", field: "FloorCategoryId", type: "numeric" },
             { title: "FloorTypeId", field: "FloorTypeId", type: "numeric" },
             { title: "BrandId", field: "BrandId", type: "numeric" },
-            { title: "UserId", field: "UserId", type: "numeric" },
             { title: "ColorId", field: "ColorId", type: "numeric" },
         ]
 

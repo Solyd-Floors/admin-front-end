@@ -1,0 +1,16 @@
+
+query GET_INVENTORY { 
+   getInventory @rest(type: "GET_INVENTORY_REQUEST", path: "/inventory") { 
+        data @type(name: "InventoryData") {
+            inventory @type(name: "Inventory") {
+                id
+                amount
+                mil_type
+                price
+                FloorId
+                FloorTileSizeId
+                status
+            }
+        }
+   } 
+}

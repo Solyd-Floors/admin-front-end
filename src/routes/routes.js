@@ -14,6 +14,7 @@ const FloorTileSizes = lazy(() => import('./floor_tile_sizes'));
 const FloorCategories = lazy(() => import('./floor_categories'));
 const Installers = lazy(() => import('./installers'));
 const FloorBoxes = lazy(() => import('./floor_boxes'));
+const Inventory = lazy(() => import('./inventory'));
 
 export default () => {
     return [
@@ -29,6 +30,7 @@ export default () => {
         <Route exact path="/floor_tile_sizes" component={FloorTileSizes} />,
         <Route exact path="/floor_categories" component={FloorCategories} />,
         <Route exact path="/floor_boxes" component={FloorBoxes} />,
+        <Route exact path="/inventory" component={Inventory} />,
         <Route exact path="/installers" component={Installers} />,
     ]
 }

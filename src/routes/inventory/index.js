@@ -24,16 +24,17 @@ import Alert from '@material-ui/lab/Alert';
 import { withApollo, Query } from "react-apollo";
 
 import { loader } from 'graphql.macro';
-import getDeleteCountryGQL from "../../gql/mutations/delete_floor_boxes.graphql";
-import getUpdateCampaignCategoryGQL from "../../gql/mutations/update_floor_box.graphql";
+import getDeleteCountryGQL from "../../gql/queries/get_inventory.graphql";
+import getUpdateCampaignCategoryGQL from "../../gql/mutations/patch_inventory.graphql.js";
 
 import campaignCategorySchema from "./validations";
 import removeNullProperties from "../../helpers/removeNullProperties";
 import { Route, Link } from 'react-router-dom';
 import { Button } from '@material-ui/core';
 
-const GET_BRANDS = loader("../../gql/queries/get_floor_boxes.graphql")
-const POST_BRANDS = loader("../../gql/mutations/post_floor_boxes.graphql")
+const GET_BRANDS = loader("../../gql/queries/get_inventory.graphql")
+const POST_BRANDS = loader("../../gql/mutations/post_inventory.graphql")
+// const getUpdateCampaignCategoryGQL = loader("../../gql/mutations/patch_inventory.graphql")
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <Button style={{ backgroundColor: "#3f51b5", width: "100px" }} size="large" color="primary" {...props} ref={ref}><div style={{ color: "white" }}>New</div></Button>),
@@ -65,7 +66,6 @@ class App extends React.Component {
         }
         this.columns = [
             { title: "ID", field: "id", hidden: false, editable: false },
-            { title: "SKU", field: "SKU", hidden: false, editable: false },
             { title: "Price", field: "price", type: "numeric" },
             { title: "mil_type", field: "mil_type", type: "numeric", 
                 lookup: {12: 12, 20: 20},
@@ -73,9 +73,8 @@ class App extends React.Component {
             },
             { title: "FloorId", field: "FloorId", type: "numeric", hidden: false },
             { title: "FloorTileSizeId", field: "FloorTileSizeId", type: "numeric", hidden: false },
-            { title: "status", field: "status", hidden: false, editable: false },
+            { title: "amount", field: "amount", hidden: false },
         ]
-
     }
     setIserror = val => this.setState({ error: val })
     setErrorMessages = val => this.setState({ errorMessages: val })
@@ -85,15 +84,23 @@ class App extends React.Component {
             let cache = await this.props.client.readQuery({
                 query: GET_BRANDS
             })
-            this.setData(cache.getFloorBoxes.data.floor_boxes)
+            this.setData(cache.getInventory.data.inventory)
         } catch (err) { }
     }
     handleMutate = async mutate_function => {
         let res;
         try {
             res = await mutate_function();
+            let { patchInventory } = res.data
+            this.props.client.writeQuery({
+                query: GET_BRANDS,
+                data: {
+                    getInventory: patchInventory
+                }
+            })
             console.log(res,82828)
         } catch (err) { 
+            console.log(err)
             console.log(JSON.stringify(err),"SADDDSAADS")
             if (
                 err.networkError &&
@@ -142,7 +149,7 @@ class App extends React.Component {
         let cache = await this.props.client.readQuery({
             query: GET_BRANDS
         })
-        cache.getFloorBoxes.data.floor_boxes = cache.getFloorBoxes.data.floor_boxes.filter(x => x.id != oldData.id)
+        cache.getInventory.data.inventory = cache.getInventory.data.inventory.filter(x => x.id != oldData.id)
         await this.props.client.writeQuery({
             query: GET_BRANDS,
             data: { ...cache }
@@ -152,17 +159,20 @@ class App extends React.Component {
     }
     handleRowUpdate = async (newData, oldData, resolve,reject) => {
         this.setErrorMessages([])
-        let args = removeNullProperties(newData)
+        let { id: dsa, ...before_args } = removeNullProperties(oldData)
+        let { id: dsaads, ...after_args} = removeNullProperties(newData)
+        let args = { before: before_args, after: after_args }
+        console.log(args)
         try {
-            let val = await campaignCategorySchema.validate(args, { abortEarly: false });
+            await campaignCategorySchema.validate(before_args, { abortEarly: false });
+            await campaignCategorySchema.validate(after_args, { abortEarly: false });
         } catch (err) {
             this.setErrorMessages(err.errors)
             return reject()
         }
         let success = await this.handleMutate(() => {
             return this.props.client.mutate({
-                mutation: getUpdateCampaignCategoryGQL(oldData.id),
-                variables: args
+                mutation: getUpdateCampaignCategoryGQL(args),
             })
         })
         return success ? resolve() : reject();
@@ -174,7 +184,7 @@ class App extends React.Component {
                     {({ loading, error, data, refetch }) => {
                         this.refetch = refetch;
                         if (error) return error.message;
-                        console.log({ data: loading && !data ? [] : data.getFloorBoxes.data.floor_boxes})
+                        console.log({ data: loading && !data ? [] : data.getInventory.data.inventory})
                         return (
                             <Grid spacing={1}>
                                 <Grid item xs={3}></Grid>
@@ -191,12 +201,15 @@ class App extends React.Component {
                                     </div>
                                     <MaterialTable
                                         isEditHidden={rowData => ["id"].indexOf(rowData.name) !== -1}
-                                        title={`Floor Boxes ${loading && !data ? "( loading )" : ""}`}
+                                        title={`Inventory ${loading && !data ? "( loading )" : ""}`}
                                         columns={this.columns}
-                                        data={loading && !data ? [] : data.getFloorBoxes.data.floor_boxes}
+                                        data={loading && !data ? [] : data.getInventory.data.inventory}
                                         icons={tableIcons}
                                         editable={{
-                                            onRowUpdate: false,
+                                            onRowUpdate: (newData, oldData) =>
+                                                new Promise((resolve,reject) => {
+                                                    this.handleRowUpdate(newData, oldData, resolve, reject);
+                                                }),
                                             onRowAdd: (newData) =>
                                                 new Promise((resolve, reject) => {
                                                     this.handleRowAdd(newData, resolve, reject)

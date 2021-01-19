@@ -4,12 +4,14 @@ export default id => {
     return gql`
         mutation UPDATE_FLOOR_TYPE(
             $mil_type: Integer,
+            $price: Integer,
             $FloorId: Integer,
             $name: Integer,
         ) {
             updateFloorType(
                 input: {
                     mil_type: $mil_type
+                    price: $price
                     FloorId: $FloorId
                     FloorTileSizeId: $FloorTileSizeId
                 }
@@ -24,6 +26,7 @@ export default id => {
                         id
                         SKU
                         mil_type
+                        price
                         FloorId
                         FloorTileSizeId
                         status

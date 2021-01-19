@@ -1,12 +1,14 @@
 
 mutation POST_FLOOR_BOXES(
     $mil_type: Int,
+    $price: Int,
     $FloorId: Int,
     $name: Int,
 ) {
     postFloorBoxes(
         input: {
             mil_type: $mil_type
+            price: $price
             FloorId: $FloorId
             FloorTileSizeId: $FloorTileSizeId
         }
@@ -20,6 +22,7 @@ mutation POST_FLOOR_BOXES(
             floor_boxes @type(name: "FloorType") {
                 id
                 SKU
+                price
                 FloorId
                 mil_type
                 FloorTileSizeId

@@ -1,0 +1,35 @@
+
+
+mutation ADD_INVENTORY(
+    $mil_type: Integer,
+    $price: Integer,
+    $FloorId: Integer,
+    $FloorTileSizeId: Integer,
+    $amount: Integer,
+) {
+    addInventory(
+        input: {
+            mil_type: $mil_type
+            price: $price
+            FloorId: $FloorId
+            FloorTileSizeId: $FloorTileSizeId
+            amount: $amount
+        }
+    ) @rest(
+        method: "POST",
+        path: "/inventory",
+        type: "PostInventoryRequest"
+    ) {
+        data @type(name: "InventoryData") {
+            inventory @type(name: "Inventory") {
+                id
+                amount
+                mil_type
+                price
+                FloorId
+                FloorTileSizeId
+                status
+            }
+        }
+    }
+}

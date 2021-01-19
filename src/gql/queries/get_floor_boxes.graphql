@@ -6,6 +6,7 @@ query GET_FLOOR_BOXES {
                 id
                 SKU
                 mil_type
+                price
                 FloorId
                 FloorTileSizeId
                 status
