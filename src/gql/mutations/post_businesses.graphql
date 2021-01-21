@@ -1,0 +1,37 @@
+
+mutation POST_FLOOR_TYPES(
+    $name: String,
+    $address: String,
+    $phone_number: String,
+    $UserId: Integer,
+    $EmployeeId: Integer,
+    $IndustryId: Integer
+) {
+    postBusinesses(
+        input: {
+            name: $name
+            address: $address
+            phone_number: $phone_number
+            UserId: $UserId
+            EmployeeId: $EmployeeId
+            IndustryId: $IndustryId
+        }
+    ) @rest(
+        method: "POST",
+        path: "/businesses",
+        type: "PostBusinessesRequest"
+    ) {
+        data @type(name: "PostBusinessesData") {
+            token
+            business @type(name: "Business") {
+                id
+                name
+                address
+                phone_number
+                UserId
+                EmployeeId
+                IndustryId
+            }
+        }
+    }
+}

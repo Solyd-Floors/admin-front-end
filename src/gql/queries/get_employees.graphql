@@ -1,0 +1,14 @@
+
+query GET_EMPLOYEES { 
+   getEmployees @rest(type: "GET_EMPLOYEES_REQUEST", path: "/employees") { 
+        data @type(name: "Employees") {
+            employees @type(name: "Employee") {
+                id
+                email
+                password
+                full_name
+                BusinessId
+            }
+        }
+   } 
+}

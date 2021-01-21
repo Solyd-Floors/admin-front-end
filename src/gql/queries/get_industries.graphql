@@ -1,0 +1,11 @@
+
+query GET_INDUSTRIES { 
+   getIndustries @rest(type: "GET_INDUSTRIES_REQUEST", path: "/industries") { 
+        data @type(name: "Industries") {
+            industries @type(name: "Industry") {
+                id
+                name
+            }
+        }
+   } 
+}

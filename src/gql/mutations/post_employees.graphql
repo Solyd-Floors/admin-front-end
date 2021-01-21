@@ -1,0 +1,31 @@
+
+mutation POST_EMPLOYEES(
+    $email: String,
+    $password: String,
+    $full_name: String,
+    $BusinessId: Integer,
+) {
+    postEmployees(
+        input: {
+            email: $email
+            password: $password
+            full_name: $full_name
+            BusinessId: $BusinessId
+        }
+    ) @rest(
+        method: "POST",
+        path: "/employees",
+        type: "PostEmployeesRequest"
+    ) {
+        data @type(name: "PostEmployeesData") {
+            token
+            employee @type(name: "Employee") {
+                id
+                email
+                password
+                full_name
+                BusinessId
+            }
+        }
+    }
+}

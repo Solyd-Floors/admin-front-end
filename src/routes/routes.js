@@ -15,6 +15,9 @@ const FloorCategories = lazy(() => import('./floor_categories'));
 const Installers = lazy(() => import('./installers'));
 const FloorBoxes = lazy(() => import('./floor_boxes'));
 const Inventory = lazy(() => import('./inventory'));
+const Businesses = lazy(() => import('./businesses'));
+const Industries = lazy(() => import('./industries'));
+const Employees = lazy(() => import('./employees'));
 
 export default () => {
     return [
@@ -32,5 +35,8 @@ export default () => {
         <Route exact path="/floor_boxes" component={FloorBoxes} />,
         <Route exact path="/inventory" component={Inventory} />,
         <Route exact path="/installers" component={Installers} />,
+        <Route exact path="/businesses" component={Businesses} />,
+        <Route exact path="/employees" component={Employees} />,
+        <Route exact path="/industries" component={Industries} />,
     ]
 }

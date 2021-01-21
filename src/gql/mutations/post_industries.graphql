@@ -1,0 +1,22 @@
+
+mutation POST_INDUSTRIES(
+    $name: String,
+) {
+    postIndustries(
+        input: {
+            name: $name
+        }
+    ) @rest(
+        method: "POST",
+        path: "/industries",
+        type: "PostIndustriesRequest"
+    ) {
+        data @type(name: "PostIndustriesData") {
+            token
+            industry @type(name: "Industry") {
+                id
+                name
+            }
+        }
+    }
+}

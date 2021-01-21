@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from "react";
-import { Switch, Route, BrowserRouter as Router, Redirect } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 
 import RoutesList from "./routes";
 import AdminProtected from "../components/AdminProtected";
@@ -18,7 +18,6 @@ const E404 = lazy(() => import('./E404'));
 
 const Routes = props => {
     return (
-        <Router>
             <div className="row">
                 <div className="column">
                 <AdminProtected>
@@ -47,7 +46,6 @@ const Routes = props => {
                 </Suspense>
                 </div>
             </div>
-        </Router>
     )
 }
 

@@ -1,0 +1,15 @@
+
+query GET_BUSINESSES { 
+   getBusinesses @rest(type: "GET_BUSINESSES_REQUEST", path: "/businesses") { 
+        data @type(name: "Businesses") {
+            businesses @type(name: "Business") {
+                id
+                name
+                address
+                phone_number
+                UserId
+                IndustryId
+            }
+        }
+   } 
+}
