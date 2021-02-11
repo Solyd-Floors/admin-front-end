@@ -27,7 +27,7 @@ export default ({before,after}) => {
                 path: "/inventory",
                 type: "PatchInventoryRequest"
             ) {
-                data @type(name: "InventoryData") {
+                data @type(name: "Inventories") {
                     inventory @type(name: "Inventory") {
                         id
                         amount

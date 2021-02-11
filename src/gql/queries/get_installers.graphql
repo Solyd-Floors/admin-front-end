@@ -1,7 +1,7 @@
 
 query GET_INSTALLER { 
    getInstallers @rest(type: "GET_INSTALLER_REQUEST", path: "/installers") { 
-        data @type(name: "InstallerTypes") {
+        data @type(name: "Installers") {
             installers @type(name: "Installer") {
                 id
                 age

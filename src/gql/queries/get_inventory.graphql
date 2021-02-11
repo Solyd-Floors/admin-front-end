@@ -1,7 +1,7 @@
 
 query GET_INVENTORY { 
    getInventory @rest(type: "GET_INVENTORY_REQUEST", path: "/inventory") { 
-        data @type(name: "InventoryData") {
+        data @type(name: "Inventories") {
             inventory @type(name: "Inventory") {
                 id
                 amount

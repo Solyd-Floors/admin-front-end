@@ -31,6 +31,7 @@ import campaignCategorySchema from "./validations";
 import removeNullProperties from "../../helpers/removeNullProperties";
 import { Route, Link } from 'react-router-dom';
 import { Button } from '@material-ui/core';
+import CustomTable from '../../components/CustomTable';
 
 const GET_BRANDS = loader("../../gql/queries/get_floor_types.graphql")
 const POST_BRANDS = loader("../../gql/mutations/post_floor_types.graphql")
@@ -168,20 +169,10 @@ class App extends React.Component {
                         if (error) return error.message;
                         console.log({ data: loading && !data ? [] : data.getFloorTypes.data.floor_types})
                         return (
-                            <Grid spacing={1}>
-                                <Grid item xs={3}></Grid>
-                                <Grid item xs={12}>
-                                    <div>
-                                        {this.state.errorMessages && this.state.errorMessages.length ?
-                                            <Alert severity="error">
-                                                {this.state.errorMessages.map((msg, i) => {
-                                                    return <div key={i}>{msg}</div>
-                                                })}
-                                            </Alert>
-                                            : null
-                                        }
-                                    </div>
-                                    <MaterialTable
+                            <div className="main-panel">
+                            <div className="content-wrapper">
+            
+                                    <CustomTable
                                         isEditHidden={rowData => ["id"].indexOf(rowData.name) !== -1}
                                         title={`Floor Types ${loading && !data ? "( loading )" : ""}`}
                                         columns={this.columns}
@@ -191,7 +182,6 @@ class App extends React.Component {
                                             onRowUpdate: (newData, oldData) =>
                                                 new Promise((resolve,reject) => {
                                                     this.handleRowUpdate(newData, oldData, resolve, reject);
-
                                                 }),
                                             onRowAdd: (newData) =>
                                                 new Promise((resolve, reject) => {
@@ -203,9 +193,8 @@ class App extends React.Component {
                                                 }),
                                         }}
                                     />
-                                </Grid>
-                                <Grid item xs={3}></Grid>
-                            </Grid>
+                            </div>
+                        </div>
                         )
                     }}
                 </Query>

@@ -20,7 +20,7 @@ mutation ADD_INVENTORY(
         path: "/inventory",
         type: "PostInventoryRequest"
     ) {
-        data @type(name: "InventoryData") {
+        data @type(name: "Inventories") {
             inventory @type(name: "Inventory") {
                 id
                 amount
