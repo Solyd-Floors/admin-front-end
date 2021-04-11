@@ -42,7 +42,6 @@ function TabsWrappedLabel(props) {
                     <Tab value="/contacts" label="Contacts" wrapped {...a11yProps('one')} />
                     <Tab value="/installers" label="Installers" wrapped {...a11yProps('one')} />
                     <Tab value="/countries" label="Countries" wrapped {...a11yProps('one')} />
-                    <Tab value="/brands" label="Brands" wrapped {...a11yProps('one')} />
                     <Tab value="/floors" label="Floors" wrapped {...a11yProps('one')} />
                     <Tab value="/floor_types" label="FloorTypes" wrapped {...a11yProps('one')} />
                     <Tab value="/floor_categories" label="FloorCategories" wrapped {...a11yProps('one')} />

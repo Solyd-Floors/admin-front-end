@@ -172,7 +172,7 @@ class App extends React.Component {
                             <div className="main-panel">
                             <div className="content-wrapper">
             
-                                    <CustomTable
+                                    <MaterialTable
                                         isEditHidden={rowData => ["id"].indexOf(rowData.name) !== -1}
                                         title={`Floor Types ${loading && !data ? "( loading )" : ""}`}
                                         columns={this.columns}

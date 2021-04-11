@@ -10,7 +10,6 @@ mutation POST_FLOOR(
             quantity: $quantity
             FloorCategoryId: $FloorCategoryId
             FloorTypeId: $FloorTypeId
-            BrandId: $BrandId
             UserId: $UserId
             ColorId: $ColorId
         }
@@ -30,7 +29,6 @@ mutation POST_FLOOR(
                 quantity
                 FloorCategoryId
                 FloorTypeId
-                BrandId
                 UserId
                 ColorId
             }
