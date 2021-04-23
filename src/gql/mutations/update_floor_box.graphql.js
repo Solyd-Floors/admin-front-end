@@ -13,7 +13,7 @@ export default id => {
                     mil_type: $mil_type
                     price: $price
                     FloorId: $FloorId
-                    FloorTileSizeId: $FloorTileSizeId
+                    Id: $Id
                 }
             ) @rest(
                 method: "PATCH",
@@ -28,7 +28,7 @@ export default id => {
                         mil_type
                         price
                         FloorId
-                        FloorTileSizeId
+                        Id
                         status
                     }
                 }

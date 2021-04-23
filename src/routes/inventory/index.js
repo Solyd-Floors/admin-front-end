@@ -66,13 +66,12 @@ class App extends React.Component {
         }
         this.columns = [
             { title: "ID", field: "id", hidden: false, editable: false },
-            { title: "Price", field: "price", type: "numeric" },
+            { title: "Price per square foot", field: "price_per_square_foot", type: "numeric" },
             { title: "mil_type", field: "mil_type", type: "numeric", 
                 lookup: {12: 12, 20: 20},
                 hidden: false 
             },
             { title: "FloorId", field: "FloorId", type: "numeric", hidden: false },
-            { title: "FloorTileSizeId", field: "FloorTileSizeId", type: "numeric", hidden: false },
             { title: "amount", field: "amount", hidden: false },
         ]
     }

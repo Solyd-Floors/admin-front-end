@@ -9,16 +9,14 @@ export default ({before,after}) => {
                 input: {
                     before: {
                         mil_type: ${before.mil_type}
-                        price: ${before.price}
                         FloorId: ${before.FloorId}
-                        FloorTileSizeId: ${before.FloorTileSizeId}
+                        price_per_square_foot: ${before.price_per_square_foot}
                         amount: ${before.amount}
                     }
                     after: {
                         mil_type: ${after.mil_type}
-                        price: ${after.price}
+                        price_per_square_foot: ${after.price_per_square_foot}
                         FloorId: ${after.FloorId}
-                        FloorTileSizeId: ${after.FloorTileSizeId}
                         amount: ${after.amount}
                     }
                 }
@@ -32,9 +30,8 @@ export default ({before,after}) => {
                         id
                         amount
                         mil_type
-                        price
                         FloorId
-                        FloorTileSizeId
+                        price_per_square_foot
                         status
                     }
                 }

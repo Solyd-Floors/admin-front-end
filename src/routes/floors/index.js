@@ -36,7 +36,7 @@ import Axios from 'axios';
 
 const GET_BRANDS = loader("../../gql/queries/get_floors.graphql")
 const POST_BRANDS = loader("../../gql/mutations/post_floor.graphql")
-const GET_FLOOR_TILE_SIZES = loader("../../gql/queries/get_floor_tile_sizes.graphql")
+
 const tableIcons = {
     Add: forwardRef((props, ref) => <Button style={{ backgroundColor: "#3f51b5", width: "100px" }} size="large" color="primary" {...props} ref={ref}><div style={{ color: "white" }}>New</div></Button>),
     Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
@@ -105,14 +105,8 @@ class App extends React.Component {
             data: [],
             iserror: false,
             errorMessages: [],
-            floor_tile_sizes: undefined
         }
         this.images = {}
-        let floor_tile_sizes_lookup ={}
-        for (let floor_tile_size of props.floor_tile_sizes) {
-            floor_tile_sizes_lookup[floor_tile_size.id] = { ...floor_tile_size, show: `${floor_tile_size.width}x${floor_tile_size.height}`};
-        }
-
         this.columns = [
             { title: "ID", field: "id", hidden: false, editable: false },
             { title: "thumbnail", field: "thumbnail_url",
@@ -158,28 +152,10 @@ class App extends React.Component {
             },            
             { title: "Name", field: "name", hidden: false },
             { title: "Description", field: "description", hidden: false },
-            { title: "Tile sizes", field: "floor_tile_sizes", 
-                render: t => <p>{t.FloorTileSizes.map(x => 
-                    floor_tile_sizes_lookup[x.id].show    
-                ).join(", ")}</p>,
-                editComponent: t => {
-                    console.log({DSADS: t.rowData})
-                    return <MultipleValues 
-                        options={Object.keys(floor_tile_sizes_lookup).map(key => floor_tile_sizes_lookup[key])}
-                        value={this.state.floor_tile_sizes || (
-                            t.rowData.FloorTileSizes ? t.rowData.FloorTileSizes.map(x => ({
-                                ...x, show: `${x.width}x${x.height}`
-                            })) : []
-                        )}
-                        onChange={(cls,changedOptions) => this.setState({
-                            floor_tile_sizes: changedOptions
-                        })}
-                    />
-                }
-            },
             { title: "FloorCategoryId", field: "FloorCategoryId", type: "numeric" },
             { title: "FloorTypeId", field: "FloorTypeId", type: "numeric" },
-            { title: "BrandId", field: "BrandId", type: "numeric" },
+            { title: "plank_dimension_width", field: "plank_dimension_width", type: "numeric" },
+            { title: "plank_dimension_height", field: "plank_dimension_height", type: "numeric" },
             { title: "ColorId", field: "ColorId", type: "numeric" },
         ]
 
@@ -222,11 +198,11 @@ class App extends React.Component {
         this.onAction = undefined;
         let files = { }
         let args = removeNullProperties(newData)
-        if (isNaN(args.points)) args.points = "null"
-        else if (typeof(args.points) === "number") args.points = String(args.points)
-
+        console.log({args})
         if (this.onAddEditAddressInputRef) args.address = this.onAddEditAddressInputRef.value
         if (args.CampaignCategoryId) args.CampaignCategoryId = Number(args.CampaignCategoryId)
+        if (args.plank_dimension_width) args.plank_dimension_width = Number(args.plank_dimension_width)
+        if (args.plank_dimension_height) args.plank_dimension_height = Number(args.plank_dimension_height)
         if (args.UserId) args.UserId = Number(args.UserId)
         let images = type === "post" ? this.images[undefined] : this.images[oldData.id]
         if (images){
@@ -235,13 +211,6 @@ class App extends React.Component {
                 args["thumbnail"] = "pass-validation"
             }
         }
-        args.floor_tile_sizes = undefined;
-        if (this.state.floor_tile_sizes) {
-            args.floor_tile_sizes = this.state.floor_tile_sizes.map(x => Number(x.id));
-        } else {
-            args.floor_tile_sizes = args.FloorTileSizes.map(x => Number(x.id));
-        }
-        console.log({floor_tile_sizes: args.floor_tile_sizes})
         try {
             let val = await campaignCategorySchema.validate(args, { abortEarly: false });
         } catch (err) {
@@ -263,7 +232,6 @@ class App extends React.Component {
                     "authorization": `Bearer ${localStorage.getItem("solyd_floors:token")}` 
                 }
             })
-            this.setState({ floor_tile_sizes: undefined })
             return res
         } catch (err) {
             this.setErrorMessages(err.response.data.errors)
@@ -279,7 +247,6 @@ class App extends React.Component {
             __typename: "Floor",
             ...res.data.data.floor,
             thumbnail: res.data.data.floor.thumbnail_url,
-            FloorTileSizes: res.data.data.floor.FloorTileSizes.map(x => ({...x, __typename: "FloorTileSize "}))
         })
         this.props.client.writeQuery({ query: GET_BRANDS, data: cache })
         return resolve();
@@ -294,7 +261,6 @@ class App extends React.Component {
             __typename: "Floor",
             ...res.data.data.floor,
             thumbnail: res.data.data.floor.thumbnail_url,
-            FloorTileSizes: res.data.data.floor.FloorTileSizes.map(x => ({...x, __typename: "FloorTileSize "}))
         })
         this.props.client.writeQuery({ query: GET_BRANDS, data: cache })
         return resolve();
@@ -374,20 +340,4 @@ class App extends React.Component {
     }
 }
 
-const FetchRequiredData = props => {
-    return (
-        <Query query={GET_FLOOR_TILE_SIZES}>
-            {({ loading, error, data }) => {
-                if (loading) return "Loading floor tile zies..."
-                let Comp = props.children;
-                return <Comp {...props} floor_tile_sizes={data.getFloorTileSizes.data.floor_tile_sizes} />;
-            }}
-        </Query>
-    )
-}
-
-let Component = withApollo(App);
-
-export default props => <FetchRequiredData>
-    {Component}
-</FetchRequiredData>;
+export default withApollo(App);

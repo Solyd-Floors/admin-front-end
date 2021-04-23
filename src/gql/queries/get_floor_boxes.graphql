@@ -8,7 +8,7 @@ query GET_FLOOR_BOXES {
                 mil_type
                 price
                 FloorId
-                FloorTileSizeId
+                Id
                 status
             }
         }

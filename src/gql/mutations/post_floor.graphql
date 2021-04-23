@@ -31,6 +31,8 @@ mutation POST_FLOOR(
                 FloorTypeId
                 UserId
                 ColorId
+                plank_dimension_width
+                plank_dimension_height
             }
         }
     }

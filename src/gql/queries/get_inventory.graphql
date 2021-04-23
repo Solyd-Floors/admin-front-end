@@ -7,8 +7,9 @@ query GET_INVENTORY {
                 amount
                 mil_type
                 price
+                thickness
                 FloorId
-                FloorTileSizeId
+                price_per_square_foot
                 status
             }
         }

@@ -10,7 +10,7 @@ mutation POST_FLOOR_BOXES(
             mil_type: $mil_type
             price: $price
             FloorId: $FloorId
-            FloorTileSizeId: $FloorTileSizeId
+            Id: $Id
         }
     ) @rest(
         method: "POST",
@@ -25,7 +25,7 @@ mutation POST_FLOOR_BOXES(
                 price
                 FloorId
                 mil_type
-                FloorTileSizeId
+                Id
                 status
             }
         }

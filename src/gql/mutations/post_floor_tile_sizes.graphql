@@ -3,7 +3,7 @@ mutation POST_FLOOR_TILE_SIZES(
     $width: Number,
     $height: Number,
 ) {
-    postFloorTileSizes(
+    posts(
         input: {
             width: $width
             height: $height
@@ -11,10 +11,10 @@ mutation POST_FLOOR_TILE_SIZES(
     ) @rest(
         method: "POST",
         path: "/floor_tile_sizes",
-        type: "PostFloorTileSizesRequest"
+        type: "PostsRequest"
     ) {
-        data @type(name: "PostFloorTileSizesData") {
-            floor_tile_sizes @type(name: "FloorTileSize") {
+        data @type(name: "PostsData") {
+            floor_tile_sizes @type(name: "") {
                 id
                 width
                 height

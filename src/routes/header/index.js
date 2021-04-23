@@ -45,6 +45,7 @@ function TabsWrappedLabel(props) {
                     <Tab value="/floors" label="Floors" wrapped {...a11yProps('one')} />
                     <Tab value="/floor_types" label="FloorTypes" wrapped {...a11yProps('one')} />
                     <Tab value="/floor_categories" label="FloorCategories" wrapped {...a11yProps('one')} />
+                    <Tab value="/general" label="General" wrapped {...a11yProps('one')} />
                     <Tab style={{backgroundColor: "red"}} value="/logout" label="Logout" {...a11yProps('three')} />
                 </Tabs>
             </AppBar>

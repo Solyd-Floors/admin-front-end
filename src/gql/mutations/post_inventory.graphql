@@ -2,17 +2,15 @@
 
 mutation ADD_INVENTORY(
     $mil_type: Integer,
-    $price: Integer,
     $FloorId: Integer,
-    $FloorTileSizeId: Integer,
+    $price_per_square_foot: Integer
     $amount: Integer,
 ) {
     addInventory(
         input: {
             mil_type: $mil_type
-            price: $price
             FloorId: $FloorId
-            FloorTileSizeId: $FloorTileSizeId
+            price_per_square_foot: $price_per_square_foot
             amount: $amount
         }
     ) @rest(
@@ -25,9 +23,8 @@ mutation ADD_INVENTORY(
                 id
                 amount
                 mil_type
-                price
+                price_per_square_foot
                 FloorId
-                FloorTileSizeId
                 status
             }
         }

@@ -9,7 +9,6 @@ const Videos = lazy(() => import('./videos'));
 const Colors = lazy(() => import('./colors'));
 const Floors = lazy(() => import('./floors'));
 const FloorTypes = lazy(() => import('./floor_types'));
-const FloorTileSizes = lazy(() => import('./floor_tile_sizes'));
 const FloorCategories = lazy(() => import('./floor_categories'));
 const Installers = lazy(() => import('./installers'));
 const FloorBoxes = lazy(() => import('./floor_boxes'));
@@ -17,6 +16,7 @@ const Inventory = lazy(() => import('./inventory'));
 const Businesses = lazy(() => import('./businesses'));
 const Industries = lazy(() => import('./industries'));
 const Employees = lazy(() => import('./employees'));
+const General = lazy(() => import('./general'));
 
 export default () => {
     return [
@@ -28,7 +28,6 @@ export default () => {
         <Route exact path="/contacts" component={Contacts} />,
         <Route exact path="/floors" component={Floors} />,
         <Route exact path="/floor_types" component={FloorTypes} />,
-        <Route exact path="/floor_tile_sizes" component={FloorTileSizes} />,
         <Route exact path="/floor_categories" component={FloorCategories} />,
         <Route exact path="/floor_boxes" component={FloorBoxes} />,
         <Route exact path="/inventory" component={Inventory} />,
@@ -36,5 +35,6 @@ export default () => {
         <Route exact path="/businesses" component={Businesses} />,
         <Route exact path="/employees" component={Employees} />,
         <Route exact path="/industries" component={Industries} />,
+        <Route exact path="/general" component={General} />
     ]
 }

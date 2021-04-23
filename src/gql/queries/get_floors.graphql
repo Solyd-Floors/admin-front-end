@@ -7,15 +7,12 @@ query GET_FLOOR {
                 name
                 description
                 thumbnail_url
-                FloorTileSizes @type(name: "FloorTileSize") {
-                    id
-                    width
-                    height
-                }
                 FloorCategoryId
                 FloorTypeId
                 UserId
                 ColorId
+                plank_dimension_width
+                plank_dimension_height
             }
         }
    } 

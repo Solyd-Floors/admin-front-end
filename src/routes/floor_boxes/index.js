@@ -72,7 +72,6 @@ class App extends React.Component {
                 hidden: false 
             },
             { title: "FloorId", field: "FloorId", type: "numeric", hidden: false },
-            { title: "FloorTileSizeId", field: "FloorTileSizeId", type: "numeric", hidden: false },
             { title: "status", field: "status", hidden: false, editable: false },
         ]
 

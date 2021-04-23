@@ -36,7 +36,9 @@ export default id => {
                         FloorTypeId
                         BrandId
                         UserId                    
-                        ColorId                    
+                        ColorId
+                        plank_dimension_width
+                        plank_dimension_height        
                     }
                 }
             }

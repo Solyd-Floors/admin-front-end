@@ -18,14 +18,12 @@ const E404 = lazy(() => import('./E404'));
 
 const Routes = props => {
     return (
-            <div className="row">
-                <div className="column">
-                <AdminProtected>
-                    <Header/><br/>
-                    <Header2/>
-                </AdminProtected>
-                </div>
-                <div style={{width: "100%", height: "100%"}} className="column">
+        <div>
+            <AdminProtected>
+                <Header/><br/>
+                <Header2/>
+            </AdminProtected>
+            <div className="">
                     <Suspense fallback={<div></div>}>
                     <Switch>
                         <Route exact path="/logout" component={Logout} />
@@ -45,7 +43,7 @@ const Routes = props => {
                     </Switch>
                 </Suspense>
                 </div>
-            </div>
+        </div>
     )
 }
 
