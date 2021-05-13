@@ -8,4 +8,4 @@ if (window.location.href.indexOf("localhost") !== -1){
 }
 
 
-export const baseURL = base_url;
+export const API_ENDPOINT = base_url;
