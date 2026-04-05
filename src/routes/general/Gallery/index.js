@@ -3,7 +3,6 @@ import React from "react";
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import Container from "./Container";
-import update from 'immutability-helper';
 import axios from "axios";
 import { API_ENDPOINT } from "../../../configs";
 
@@ -32,7 +31,7 @@ class Gallery extends React.Component {
         })
         let { url } = payload.data;
 
-        let { data: payload_2 } = await axios(`${API_ENDPOINT}/general/gallery/insert_image`, {
+        await axios(`${API_ENDPOINT}/general/gallery/insert_image`, {
             method: "POST",
             headers: { "Authorization": "Bearer " + window.get_token() },
             data: { image_url: url }

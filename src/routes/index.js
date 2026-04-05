@@ -5,8 +5,6 @@ import RoutesList from "./routes";
 import AdminProtected from "../components/AdminProtected";
 import NotLoggedInProtected from "../components/NotLoggedInProtected";
 import Header from "./header"
-import { loader } from 'graphql.macro';
-import { Query } from "react-apollo";
 import Header2 from "./header2";
 
 // const GET_CAMPAIGN_CATEGORIES = loader("../gql/queries/get_campaign_categories.graphql")
