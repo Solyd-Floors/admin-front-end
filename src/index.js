@@ -4,10 +4,11 @@ import App from './App';
 // import * as serviceWorker from './serviceWorker';
 // import reportWebVitals from './reportWebVitals';
 import { API_ENDPOINT } from './configs';
+import getAuthToken from './helpers/getAuthToken';
 
 window.__API_ENDPOINT__ = API_ENDPOINT
 
-window.get_token = () => localStorage.getItem("solyd_floors:token")
+window.get_token = () => getAuthToken()
 window.objectToFormData = (obj, rootName, ignoreList) => {
   var formData = new FormData();
 
