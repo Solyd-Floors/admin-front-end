@@ -29,6 +29,7 @@ import getUpdateCampaignCategoryGQL from "../../gql/mutations/update_team_member
 
 import campaignCategorySchema from "./validations";
 import removeNullProperties from "../../helpers/removeNullProperties";
+import getAuthToken from "../../helpers/getAuthToken";
 import { Route, Link } from 'react-router-dom';
 import { Button } from '@material-ui/core';
 import Axios from 'axios';
@@ -223,10 +224,11 @@ class App extends React.Component {
         let id = type.indexOf("patch") !== -1 ? `/${type.split("_")[1]}` : "" 
         type = type.indexOf("patch") !== -1 ? "patch" : "post"
         try {
+            const token = getAuthToken();
             return await Axios[type](`${window.__API_ENDPOINT__}/team_members${id}`, formData, {
                 headers: { 
                     'Content-Type': 'multipart/form-data',
-                    "authorization": `Bearer ${localStorage.getItem("solyd_floors:token")}` 
+                    ...(token ? { "authorization": `Bearer ${token}` } : {})
                 }
             })
         } catch (err) {
