@@ -3,12 +3,13 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloLink, Observable } from 'apollo-link';
 import { RestLink } from 'apollo-link-rest';
 import { API_ENDPOINT } from './configs';
+import getAuthToken from './helpers/getAuthToken';
 
 const request = async (operation) => {
-  const token = localStorage.getItem("solyd_floors:token");
+  const token = getAuthToken();
   operation.setContext({
     headers: {
-      authorization: `Bearer ${token}`
+      ...(token ? { authorization: `Bearer ${token}` } : {})
     }
   });
 };
