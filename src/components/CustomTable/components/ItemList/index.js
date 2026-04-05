@@ -3,7 +3,7 @@ import List from "./List";
 import { Link } from "react-router-dom";
 
 export default props => {
-    let { onRowUpdate, onRowAdd, onRowDelete } = props.editable || {}
+    let { onRowAdd, onRowDelete } = props.editable || {}
     return (
         <div className="card">
             <div className="card-body">

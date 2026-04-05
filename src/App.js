@@ -4,7 +4,7 @@ import { ApolloProvider, Query } from 'react-apollo';
 import client from "./apolloClient"
 import { BrowserRouter as Router } from "react-router-dom";
 
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { loader } from 'graphql.macro';
@@ -16,14 +16,8 @@ toast.configure({
   draggable: true,
 });
 
-class _App extends React.Component {
+class AppRoot extends React.Component {
   render(){
-    let { pathname } = this.props.location;
-    // if (pathname.indexOf("business")) {
-    //   return (
-    //     <BusinessApp/>
-    //   )
-    // }
     return (
         <ApolloProvider client={client}>
           <Query query={GET_AUTH}>
@@ -41,7 +35,6 @@ class _App extends React.Component {
   }
 }
 
-_App = withRouter(_App);
+AppRoot = withRouter(AppRoot);
 
-export default props => <Router><_App/></Router>
-
+export default props => <Router><AppRoot/></Router>
